@@ -19,6 +19,7 @@ graph_row.appendChild(graph_content_area)
 top_container.appendChild(navbar_row)
 top_container.appendChild(graph_row)
 
+//Append the top_container containing the whole site to the body.
 document.body.appendChild(top_container)
 
 

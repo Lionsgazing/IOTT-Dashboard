@@ -44,29 +44,33 @@ export namespace dom {
         return option
     }
 
-    export function h2() {
+    export function h2(content: string) {
         const option = document.createElement("h2")
-        
+        option.textContent = content
         return option
     }
 
-    export function h3() {
+    export function h3(content: string) {
         const option = document.createElement("h3")
+        option.textContent = content
         return option
     }
 
-    export function h4() {
+    export function h4(content: string) {
         const option = document.createElement("h4")
+        option.textContent = content
         return option
     }
 
-    export function h5() {
+    export function h5(content: string) {
         const option = document.createElement("h5")
+        option.textContent = content
         return option
     }
 
-    export function h6() {
+    export function h6(content: string) {
         const option = document.createElement("h6")
+        option.textContent = content
         return option
     }
 }
