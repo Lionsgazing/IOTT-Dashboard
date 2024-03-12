@@ -45,7 +45,15 @@ export class NavbarItem {
 
         this._NavbarItem = dom.li("nav-item")
         this._NavbarItemBrand = dom.a("nav-link", this._data.title, this._data.href)
-        this._NavbarItemBrand.style.color = this._data.title_unactive_color
+
+        //Determine which one to show as selected by using the URL and href.
+        let base_addr = document.baseURI.substring(0, document.baseURI.length - this._data.href.length)
+        if (base_addr + this._data.href == document.baseURI) {
+            this.IsActive = true
+        }
+        else {
+            this.IsActive = false
+        }
 
         this._NavbarItem.appendChild(this._NavbarItemBrand)
     }
@@ -56,10 +64,10 @@ export class NavbarItem {
         this._callback_id = id
 
         //Assign
-        addEventListener("click", (ev: MouseEvent) => {
-            console.log("HIIII")
+        this._NavbarItemBrand.onclick = (ev: Event) => {
+            //ev.preventDefault() Prevents the normal HREF behaviour. Might be usefull later!
             this._callback!(ev, this._callback_id!, this, nav)
-        })
+        }
     }
 }
 
@@ -100,10 +108,7 @@ export class Navbar {
             const Item = this._data.NavbarItems[i]
             this._NavbarItemContainer.appendChild(Item.NavbarItem)
             Item.SetOnClickCallback(Navbar.callback, i, this)
-
-            if (i == 0) {
-                Item.IsActive = true
-            }
+            //Item.IsActive = Item.IsActive
         }
 
 
@@ -117,9 +122,9 @@ export class Navbar {
     }
 
     static callback(ev: Event, id: number, item: NavbarItem, nav: Navbar) {
-        console.log(id)
-
         const Items = nav._data.NavbarItems
+
+        console.log(id)
         
         //Set all items to being not active
         for (let i = 0; i < Items.length; i++) {
