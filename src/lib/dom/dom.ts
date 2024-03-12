@@ -73,4 +73,30 @@ export namespace dom {
         option.textContent = content
         return option
     }
+
+    export function nav(className: string) {
+        const nav = document.createElement("nav")
+        nav.className = className
+        return nav
+    }
+
+    export function a(className: string, textContent?: string, href: string = "") {
+        const a = document.createElement("a")
+        a.className = className
+        a.textContent = textContent!
+        a.href = href
+        return a
+    }
+
+    export function li(className: string) {
+        const li = document.createElement("li")
+        li.className = className
+        return li
+    }
+
+    export function ul(className: string) {
+        const ul = document.createElement("ul")
+        ul.className = className
+        return ul
+    }
 }
