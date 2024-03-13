@@ -80,11 +80,15 @@ export namespace dom {
         return nav
     }
 
-    export function a(className: string, textContent?: string, href: string = "") {
+    export function a(className: string, textContent?: string, href?: string) {
         const a = document.createElement("a")
         a.className = className
         a.textContent = textContent!
-        a.href = href
+        
+        if (href !== undefined) {
+            a.href = href
+        }
+
         return a
     }
 
@@ -98,5 +102,11 @@ export namespace dom {
         const ul = document.createElement("ul")
         ul.className = className
         return ul
+    }
+    
+    export function header(className: string) {
+        const header = document.createElement("header")
+        header.className = className
+        return header
     }
 }

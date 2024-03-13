@@ -1,75 +1,7 @@
 import { dom } from "../dom/dom"
-
-export type NavbarItemData = {
-    title: string
-    title_active_color: string
-    title_unactive_color: string
-    href: string
-}
-
-export class NavbarItem {
-    protected _NavbarItem: HTMLElement
-    protected _NavbarItemBrand: HTMLElement
-
-    private _callback?: (ev:Event, id:number, item: NavbarItem, nav: Navbar) => void
-    private _callback_id?: number
-
-    private _data: NavbarItemData
-
-    get NavbarItem() {
-        return this._NavbarItem
-    }
-
-    private _IsActive: boolean
-    set IsActive(state: boolean) {
-        this._IsActive = state
-        if (state == false) {
-            this._IsActive = false
-            this._NavbarItemBrand.className = "nav-link"
-            this._NavbarItemBrand.style.color = this._data.title_unactive_color
-        }
-        else {
-            this._IsActive = true
-            this._NavbarItemBrand.className = "nav-link active"
-            this._NavbarItemBrand.style.color = this._data.title_active_color
-        }
-    }
-    get IsActive() {
-        return this._IsActive
-    }
-
-    constructor(data: NavbarItemData) {
-        this._data = data
-
-        this._IsActive = false
-
-        this._NavbarItem = dom.li("nav-item")
-        this._NavbarItemBrand = dom.a("nav-link", this._data.title, this._data.href)
-
-        //Determine which one to show as selected by using the URL and href.
-        let base_addr = document.baseURI.substring(0, document.baseURI.length - this._data.href.length)
-        if (base_addr + this._data.href == document.baseURI) {
-            this.IsActive = true
-        }
-        else {
-            this.IsActive = false
-        }
-
-        this._NavbarItem.appendChild(this._NavbarItemBrand)
-    }
-
-    public SetOnClickCallback(callback: (ev: Event, id: number, item: NavbarItem, nav: Navbar) => void, id: number, nav: Navbar) {
-        //Store
-        this._callback = callback
-        this._callback_id = id
-
-        //Assign
-        this._NavbarItemBrand.onclick = (ev: Event) => {
-            //ev.preventDefault() Prevents the normal HREF behaviour. Might be usefull later!
-            this._callback!(ev, this._callback_id!, this, nav)
-        }
-    }
-}
+import { Router } from "../router"
+import { NavbarItem } from "./navbarItem"
+import { isColorHex } from "./color_identifier"
 
 export type NavbarData = {
     title: string,
@@ -80,51 +12,64 @@ export type NavbarData = {
 }
 
 export class Navbar {
+    //UI Elements
     protected _Navbar: HTMLElement
     protected _NavbarContainer: HTMLDivElement
     protected _NavbarBrand: HTMLAnchorElement
     protected _NavbarItemContainer: HTMLUListElement
 
+    //Data & Router
     private _data: NavbarData
+    private _router: Router
 
-    get Navbar() {
+    //Navbar content
+    get Content() {
         return this._Navbar
     }
 
-    constructor(data: NavbarData) {
+    constructor(data: NavbarData, router: Router) {
         this._data = data
+        this._router = router
 
         //Create needed elements
-        this._Navbar = dom.nav("navbar navbar-expand-lg bg-dark")
+        this._Navbar = dom.header("navbar navbar-expand-lg bg-dark")
         this._NavbarContainer = dom.div("container-fluid")
 
-        this._NavbarBrand = dom.a("navbar-brand", "Navbar")
-        this._NavbarBrand.style.color = "#FFFFFF"
+        this._NavbarBrand = dom.a("navbar-brand", this._data.title)
+
+        if (isColorHex(this._data.title_color)) {
+            this._NavbarBrand.style.color = this._data.title_color
+        }
+        else {
+            this._NavbarBrand.className += " " + this._data.title_color
+        }
 
         //Create container for navbar items
         this._NavbarItemContainer = dom.ul("navbar-nav me-auto mb-2 mb-lg-0")
         
+        //Add NavbarItems
+        const Items = this._data.NavbarItems
         for (let i = 0; i < this._data.NavbarItems.length; i++) {
-            const Item = this._data.NavbarItems[i]
+            //Get NavbarItem and append it to the Navbar 
+            const Item = Items[i]
             this._NavbarItemContainer.appendChild(Item.NavbarItem)
+
+            //Add a route for this NavbarItem
+            router.AddRoute({route: Item.RouteDestination, content: Item.RouteContent})
+
+            //Setup the onclick functionality
             Item.SetOnClickCallback(Navbar.callback, i, this)
-            //Item.IsActive = Item.IsActive
         }
-
-
 
         //Stich them together
         this._NavbarContainer.appendChild(this._NavbarBrand)
         this._NavbarContainer.appendChild(this._NavbarItemContainer)
         this._Navbar.appendChild(this._NavbarContainer)    
-
-
     }
 
     static callback(ev: Event, id: number, item: NavbarItem, nav: Navbar) {
+        //Get items
         const Items = nav._data.NavbarItems
-
-        console.log(id)
         
         //Set all items to being not active
         for (let i = 0; i < Items.length; i++) {
@@ -134,5 +79,12 @@ export class Navbar {
 
         //Set the clicked one to be active.
         Items[id].IsActive = true
+
+        //Determine the destination url
+        const base_url = window.location.origin
+        const dest_url = base_url + Items[id].RouteDestination
+
+        //Use router to route to that url
+        nav._router.Route(dest_url)
     }
 }
