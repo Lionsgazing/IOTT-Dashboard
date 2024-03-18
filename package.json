@@ -16,9 +16,11 @@
   },
   "dependencies": {
     "@popperjs/core": "^2.11.8",
+    "@types/paho-mqtt": "^1.0.10",
     "bootstrap": "^5.3.3",
     "csv-parse": "^5.5.5",
     "echarts": "^5.5.0",
-    "fs": "^0.0.1-security"
+    "fs": "^0.0.1-security",
+    "paho-mqtt": "^1.1.0"
   }
 }

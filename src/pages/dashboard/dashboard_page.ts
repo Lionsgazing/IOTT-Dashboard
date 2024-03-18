@@ -1,5 +1,5 @@
-import { dom } from "../lib/dom/dom"
-import { Graph } from "../lib/graph"
+import { dom } from "../../lib/dom/dom"
+import { Graph } from "../../lib/graph"
 
 export class DashboardPage {
     private _Container: HTMLDivElement

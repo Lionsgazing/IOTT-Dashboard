@@ -3,15 +3,7 @@ import {dom} from './lib/dom/dom'
 import {Navbar} from './lib/bootstrap/navbar'
 import { NavbarItem } from './lib/bootstrap/navbarItem'
 import {Router} from './lib/router'
-import { DashboardPage } from './pages/dashboard_page'
-
-import * as csvParse from 'csv-parse'
-
-const parser = csvParse.parse({delimiter: ";"}, (err, data) => {
-    console.log(data)
-})
-
-fs.
+import { DashboardPage } from './pages/dashboard/dashboard_page'
 
 // Setup content that is shared between all routes
 
