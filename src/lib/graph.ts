@@ -1,9 +1,11 @@
 import { dom } from "./dom/dom"
 import * as echarts from 'echarts'
+import { Serie } from "./graph_series"
 
 export class Graph {
     private _Container: HTMLDivElement
     private _Graph: echarts.ECharts
+    private _GraphSeries: Serie[]
 
     private _IsLoaded: boolean
 
@@ -16,6 +18,7 @@ export class Graph {
         this._Container = target_container
         this._Graph = echarts.init(this._Container)
         this._IsLoaded = false
+        this._GraphSeries = []
     }
 
     public Resize() {
@@ -24,7 +27,51 @@ export class Graph {
         }
     }
 
-    public Setup() {
+    public Update() {
+        let series: object[] = []
+        for (const graph_serie of this._GraphSeries) {
+            series.push(graph_serie.toEcharts())
+        }
+
+        this._Graph.setOption({            
+            series: series,
+        })
+    }
+
+    public SetSize(height: string, width: string) {
+        this._Graph.getDom().style.height = height
+        this._Graph.getDom().style.width = width
+    }
+
+    public Setup(Series: Serie[], xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
+        this._GraphSeries = Series
+
+        let series: object[] = []
+        for (const graph_serie of this._GraphSeries) {
+            series.push(graph_serie.toEcharts())
+        }
+        let xAxisGraph
+        if (xAxis === undefined) {
+            xAxisGraph = {
+                name: "xAxis",
+                type: "time",
+            }
+        }
+        else {
+            xAxisGraph = xAxis
+        }
+
+        let yAxisGraph
+        if (yAxis === undefined) {
+            yAxisGraph = {
+                name: "yAxis",
+                type: "value",
+            }
+        }
+        else {
+            yAxisGraph = yAxis
+        }
+
         //Create echarts graph
         this._Graph.setOption({
             title: {
@@ -32,28 +79,12 @@ export class Graph {
                 text: "Title",
                 subtext: "Sub text",
             },
-            xAxis: {
-                name: "xAxis",
-                type: "value",
+            xAxis: xAxisGraph,
+            yAxis: yAxisGraph,
+            grid: {
+                show: true,
             },
-            yAxis: {
-                name: "yAxis",
-                type: "value",
-            },
-            series: [
-                {
-                    name: "series",
-                    type: "line",
-                    sampling: "lttb",
-                    data: [
-                        [1, 2],
-                        [2, 2],
-                        [3, 2],
-                        [4, 2]
-                    ],
-                    encode: {x: [0], y: [1]}
-                }
-            ],
+            series: series,
             legend: {
                 show: "true",
                 type: "plain",

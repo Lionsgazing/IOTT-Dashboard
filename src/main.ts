@@ -4,6 +4,10 @@ import {Navbar} from './lib/bootstrap/navbar'
 import { NavbarItem } from './lib/bootstrap/navbarItem'
 import {Router} from './lib/router'
 import { DashboardPage } from './pages/dashboard/dashboard_page'
+import { StatusPage } from './pages/status/status_page'
+import { SettingsPage } from './pages/settings/settings_page'
+import { MQTTHandler } from './pages/MQTTHandler'
+import { mqtt_debug } from './mqtt_debug'
 
 // Setup content that is shared between all routes
 
@@ -23,6 +27,20 @@ const router = new Router({
 
 //Create pages
 const Dashboard = new DashboardPage()
+const Status = new StatusPage()
+const Settings = new SettingsPage()
+
+//Setup MQTT handler and link it to the relevant modules/pages
+const MQTTManager = new MQTTHandler(
+    ["IOTT/Data", "IOTT/Status/#"], 
+    [DashboardPage.onMqttMessage, StatusPage.onMqttMessage], 
+    [Dashboard, Settings]
+)
+
+//Debug
+const debug = new mqtt_debug(MQTTManager, 500, 0.1)
+void debug.debug()
+
 
 //Create navbar
 // Note - Navbar creates routes dynamically when adding a NavbarItem.
@@ -47,7 +65,8 @@ const navbar = new Navbar({
             unactive_color: "#6c757d", 
             route_destination: "/Status", 
             route_content: async () => {
-                return dom.h1("/Status")
+                await Status.Setup()
+                return Status.Content
             }
         }),
         new NavbarItem({
@@ -56,7 +75,8 @@ const navbar = new Navbar({
             unactive_color: "#6c757d", 
             route_destination: "/Settings", 
             route_content: async () => {
-                return dom.h1("/Settings")
+                await Settings.Setup()
+                return Settings.Content
             }
         })
     ]

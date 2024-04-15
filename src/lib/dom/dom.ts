@@ -109,4 +109,9 @@ export namespace dom {
         header.className = className
         return header
     }
+
+    export function hr() {
+        const hr = document.createElement("hr")
+        return hr
+    }
 }

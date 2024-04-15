@@ -9,6 +9,7 @@ export type NavbarItemConfig = {
 
     route_destination: string
     route_content: () => Promise<HTMLElement>
+    reset?: () => void
 }
 
 export class NavbarItem {

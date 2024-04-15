@@ -26,6 +26,10 @@ export class MQTT {
     //Flags
     private _isConnected: boolean
 
+    get isReady() {
+        return this._isConnected
+    }
+
     constructor(connection_opts: MQTT_Connection_Options) {
         this._connection_opts = connection_opts
 
@@ -33,16 +37,20 @@ export class MQTT {
         this._isConnected = false
 
         //Setup client
-        this._client = new paho_mqtt.Client(this._connection_opts.host, this._connection_opts.port, this._connection_opts.client_id)
-        
-        //Connect
-        this._client.connect({
+        //"ws://test.mosquitto.org:1883/mqtt"
+
+        //Note the broker has to use the protocol websockets!
+        // This is because of some browser related fuckery that translates the mqtt:// message to a websocket ws:// or wss://
+        // so we broker has to support the websockets!
+        this._client = new paho_mqtt.Client(this._connection_opts.host, this._connection_opts.port, "client_id")
+
+        const client_connect_opts: paho_mqtt.ConnectionOptions = {
             userName: this._connection_opts.username,
             password: this._connection_opts.password,
             useSSL: this._connection_opts.useSSL,
-            willMessage: this._connection_opts.lastWill,
             reconnect: true,
-            onSuccess: (o) => {
+            //mqttVersion: 3,
+            onSuccess: () => {
                 console.log("Successfully connected to MQTT-broker: " + this._connection_opts.host + ":" + this._connection_opts.port)
 
                 //Subscribe to the given topics.
@@ -58,13 +66,20 @@ export class MQTT {
                 //Set isConnected state
                 this._isConnected = true
             },
-            onFailure: (o) => {
+            onFailure: () => {
                 console.error("Failed to connect to MQTT-broker: " + this._connection_opts.host + ":" + this._connection_opts.port)
 
                 //Set isConnected state
                 this._isConnected = false
             }
-        })
+        } 
+
+        if (this._connection_opts.lastWill !== undefined) {
+            client_connect_opts.willMessage = this._connection_opts.lastWill
+        }
+
+        //Connect
+        this._client.connect(client_connect_opts)
     }
 
     public publish(topic: string, payload: object, retained: boolean) {
@@ -75,7 +90,7 @@ export class MQTT {
 
         const payload_str = JSON.stringify(payload)
         
-        this._client.send(topic, payload_str, undefined, retained)
+        this._client.send(topic, payload_str, 0, retained)
     }
 }
 
