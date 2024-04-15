@@ -5,10 +5,10 @@ export class MQTTHandler {
     private _mqtt_connection_options: MQTT_Connection_Options
     private _subscribtions: string[]
 
-    private _subscribtion_callbacks: (<T extends object>(payload: T, extra: any) => void)[]
+    private _subscribtion_callbacks: (<T extends object>(topic: string, payload: T, extra: any) => void)[]
     private _subscribtion_callbacks_extra: any[]
 
-    constructor(subscribtions: string[], subscribtion_callbacks: (<T extends object>(payload: T, extra: any) => void)[], subscribtion_callbacks_extra: any[]) {
+    constructor(subscribtions: string[], subscribtion_callbacks: (<T extends object>(topic: string, payload: T, extra: any) => void)[], subscribtion_callbacks_extra: any[]) {
         //Create connection options for the MQTT
         this._mqtt_connection_options = {
             host: "127.0.0.1",
@@ -48,14 +48,16 @@ export class MQTTHandler {
         const mqtt_instance: MQTTHandler = extra
         const topic: string = msg.destinationName
         const json_payload: object = JSON.parse(msg.payloadString)
+        console.log(topic)
+        console.log(topic.split("boi"))
 
         switch (topic) {
             case mqtt_instance._subscribtions[0]: //Dashboard realtime datastream
-                mqtt_instance._subscribtion_callbacks[0](json_payload, mqtt_instance._subscribtion_callbacks_extra[0])
+                mqtt_instance._subscribtion_callbacks[0](topic, json_payload, mqtt_instance._subscribtion_callbacks_extra[0])
                 break
 
             case mqtt_instance._subscribtions[1]: //Status data
-                mqtt_instance._subscribtion_callbacks[1](json_payload, mqtt_instance._subscribtion_callbacks_extra[1])
+                mqtt_instance._subscribtion_callbacks[1](topic, json_payload, mqtt_instance._subscribtion_callbacks_extra[1])
                 break
         }
     }

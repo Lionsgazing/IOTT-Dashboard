@@ -18,15 +18,22 @@ export class mqtt_debug {
             const new_x = this._update_time_ms/1000 + this._last_x
             this._last_x = new_x
     
-            const y = Math.sin(2 * Math.PI * new_x * this._f)
+            const data0 = Math.sin(2 * Math.PI * new_x * this._f)
+            const data1 = Math.sin(2 * Math.PI * new_x * this._f + Math.PI/4) + Math.sin(2 * Math.PI * new_x * this._f * 2.5)
     
-            const payload = {
+            const payload0 = {
                 timestamp: new Date().getTime(),
-                sin0: y,
-                sin1: -y,
+                data: data0,
             } 
+
+            const payload1 = {
+                timestamp: new Date().getTime(),
+                data: data1,
+            }  
+            
     
-            this._mqtt_instance.publish("IOTT/Data", payload, false)
+            this._mqtt_instance.publish("IOTT/Data/Dev0", payload0, false)
+            this._mqtt_instance.publish("IOTT/Data/Dev1", payload1, false)
     
             console.log("Publish")
         }

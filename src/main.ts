@@ -32,7 +32,7 @@ const Settings = new SettingsPage()
 
 //Setup MQTT handler and link it to the relevant modules/pages
 const MQTTManager = new MQTTHandler(
-    ["IOTT/Data", "IOTT/Status/#"], 
+    ["IOTT/Data/#", "IOTT/Status/#"], 
     [DashboardPage.onMqttMessage, StatusPage.onMqttMessage], 
     [Dashboard, Settings]
 )

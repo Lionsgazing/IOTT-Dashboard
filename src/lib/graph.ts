@@ -1,11 +1,14 @@
 import { dom } from "./dom/dom"
 import * as echarts from 'echarts'
 import { Serie } from "./graph_series"
+import { Dictionary } from "echarts/types/src/util/types.js"
 
 export class Graph {
     private _Container: HTMLDivElement
     private _Graph: echarts.ECharts
-    private _GraphSeries: Serie[]
+
+    private _GraphSeriesIds: string[]
+    private _GraphSeries: Dictionary<Serie>
 
     private _IsLoaded: boolean
 
@@ -13,12 +16,23 @@ export class Graph {
         return this._Container
     }
 
+    get SeriesIDs() {
+        return this._GraphSeriesIds
+    }
+
+    get Series() {
+        return this._GraphSeries
+    }
+
     constructor(target_container: HTMLDivElement) {
         //Save container
         this._Container = target_container
         this._Graph = echarts.init(this._Container)
         this._IsLoaded = false
-        this._GraphSeries = []
+
+        //Create series containers
+        this._GraphSeriesIds = []
+        this._GraphSeries = {}
     }
 
     public Resize() {
@@ -27,10 +41,18 @@ export class Graph {
         }
     }
 
+    public AddSeries(Series: Serie[]) {
+        for (const val of Series) {
+            const ID = val.ID
+            this._GraphSeriesIds.push(ID)
+            this._GraphSeries[ID] = val
+        }
+    }
+
     public Update() {
         let series: object[] = []
-        for (const graph_serie of this._GraphSeries) {
-            series.push(graph_serie.toEcharts())
+        for (const ID of this._GraphSeriesIds) {
+            series.push(this._GraphSeries[ID])
         }
 
         this._Graph.setOption({            
@@ -43,13 +65,7 @@ export class Graph {
         this._Graph.getDom().style.width = width
     }
 
-    public Setup(Series: Serie[], xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
-        this._GraphSeries = Series
-
-        let series: object[] = []
-        for (const graph_serie of this._GraphSeries) {
-            series.push(graph_serie.toEcharts())
-        }
+    public Setup(xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
         let xAxisGraph
         if (xAxis === undefined) {
             xAxisGraph = {
@@ -84,7 +100,6 @@ export class Graph {
             grid: {
                 show: true,
             },
-            series: series,
             legend: {
                 show: "true",
                 type: "plain",
