@@ -1,8 +1,0 @@
-
-//Topic IOTT/Device/id
-{
-    "timestamp": "int",
-    "temperature": "float",
-    "humidity": "float",
-    "other": "any"
-}

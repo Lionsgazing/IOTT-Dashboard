@@ -52,7 +52,7 @@ export class Graph {
     public Update() {
         let series: object[] = []
         for (const ID of this._GraphSeriesIds) {
-            series.push(this._GraphSeries[ID])
+            series.push(this._GraphSeries[ID].toEcharts())
         }
 
         this._Graph.setOption({            

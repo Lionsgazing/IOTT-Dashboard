@@ -19,8 +19,10 @@ export class mqtt_debug {
             this._last_x = new_x
     
             const data0 = Math.sin(2 * Math.PI * new_x * this._f)
-            const data1 = Math.sin(2 * Math.PI * new_x * this._f + Math.PI/4) + Math.sin(2 * Math.PI * new_x * this._f * 2.5)
-    
+            const data1 = Math.sin(2 * Math.PI * new_x * this._f + Math.PI/4) + Math.sin(2 * Math.PI * new_x * this._f * 1.5)
+            const data2 = Math.sin(2 * Math.PI * new_x * this._f + Math.PI/2) + Math.sin(2 * Math.PI * new_x * this._f * 0.5)
+            const data3 = Math.sin(2 * Math.PI * new_x * this._f + Math.PI/3) + Math.sin(2 * Math.PI * new_x * this._f * 2.5)
+
             const payload0 = {
                 timestamp: new Date().getTime(),
                 data: data0,
@@ -31,11 +33,20 @@ export class mqtt_debug {
                 data: data1,
             }  
             
-    
-            this._mqtt_instance.publish("IOTT/Data/Dev0", payload0, false)
-            this._mqtt_instance.publish("IOTT/Data/Dev1", payload1, false)
-    
-            console.log("Publish")
+            const payload2 = {
+                timestamp: new Date().getTime(),
+                data: data2,
+            }  
+
+            const payload3 = {
+                timestamp: new Date().getTime(),
+                data: data3,
+            }  
+
+            this._mqtt_instance.publish("raspberry/Aalborg/sense-hat/readings/all-readings", payload0, false)
+            this._mqtt_instance.publish("raspberry/Copenhagen/sense-hat/readings/all-readings", payload1, false)
+            this._mqtt_instance.publish("raspberry/Silkeborg/sense-hat/readings/all-readings", payload2, false)
+            this._mqtt_instance.publish("raspberry/Aarhus/sense-hat/readings/all-readings", payload3, false)
         }
     }
 }

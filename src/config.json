@@ -1,0 +1,57 @@
+{
+    "dashboard_config": {
+        "tabify": false,
+        "graphs": [
+            {
+                "title": "Aalborg",
+                "id_link": "Aalborg",
+                "display": ["temperature", "humidity", "pressure"],
+                "width": "",
+                "height": "200"
+            },
+            {
+                "title": "Copenhagen",
+                "id_link": "Aalborg",
+                "display": ["temperature", "humidity", "pressure"],
+                "width": "",
+                "height": "200"
+            },
+            {
+                "title": "Silkeborg",
+                "id_link": "Aalborg",
+                "display": ["temperature", "humidity", "pressure"],
+                "width": "",
+                "height": "200"
+            },
+            {
+                "title": "Aarhus",
+                "id_link": "Aalborg",
+                "display": ["temperature", "humidity", "pressure"],
+                "width": "",
+                "height": "200"
+            }
+        ]
+    },
+
+    "mqtt_config": {
+        "base_topic": "raspberry",
+        "devices": [
+            {
+                "id": "Aalborg",
+                "data_topic": "/Aalborg/sense-hat/readings/all-readings"
+            },
+            {
+                "id": "Copenhagen",
+                "data_topic": "/Copenhagen/sense-hat/readings/all-readings"
+            },
+            {
+                "id": "Silkeborg",
+                "data_topic": "/Silkeborg/sense-hat/readings/all-readings"
+            },
+            {
+                "id": "Aarhus",
+                "data_topic": "/Aarhus/sense-hat/readings/all-readings"
+            }
+        ]
+    }
+}

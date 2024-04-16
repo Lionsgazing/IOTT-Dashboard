@@ -1,14 +1,28 @@
 import { MQTT, MQTT_Connection_Options, Message } from "../lib/mqtt.ts";
 
+export type SubscribtionsData = {
+    subscribtions: string[]
+    callback: (<T extends object>(topic: string, payload: T, extra: any) => void)
+    callback_extra: any
+}
+
 export class MQTTHandler {
     private _mqtt: MQTT
     private _mqtt_connection_options: MQTT_Connection_Options
-    private _subscribtions: string[]
+    private _subscribtionsData: SubscribtionsData[]
 
-    private _subscribtion_callbacks: (<T extends object>(topic: string, payload: T, extra: any) => void)[]
-    private _subscribtion_callbacks_extra: any[]
+    constructor(subscribtionsData: SubscribtionsData[]) {
+        //Unpack subscribtion object to get actual subscribtion topics
+        let total_subscribtions: string[] = []
+        for (const subscribtionData of subscribtionsData) {
+            for (const subscribtion of subscribtionData.subscribtions) {
+                total_subscribtions.push(subscribtion)
+            }
+        }
 
-    constructor(subscribtions: string[], subscribtion_callbacks: (<T extends object>(topic: string, payload: T, extra: any) => void)[], subscribtion_callbacks_extra: any[]) {
+        //Save subscribtion data
+        this._subscribtionsData = subscribtionsData
+
         //Create connection options for the MQTT
         this._mqtt_connection_options = {
             host: "127.0.0.1",
@@ -17,7 +31,7 @@ export class MQTTHandler {
             password: "",
             useSSL: false,
 
-            subscribtions: subscribtions,
+            subscribtions: total_subscribtions,
 
             onMessageCallback: MQTTHandler.onMessage,
             onMessageCallbackExtra: this,
@@ -25,19 +39,8 @@ export class MQTTHandler {
             client_id: "IOTT_Dashboard-" + String(new Date().getTime())
         }
 
-        //Store subscribtions for ease of use and their callbacks
-        this._subscribtions = this._mqtt_connection_options.subscribtions
-        this._subscribtion_callbacks = subscribtion_callbacks
-        this._subscribtion_callbacks_extra = subscribtion_callbacks_extra
-
-        //Ensure that there is as many subscribtions as there is subscribtion callbacks
-        if (this._subscribtions.length == this._subscribtion_callbacks.length && this._subscribtion_callbacks.length == this._subscribtion_callbacks_extra.length) {
-            //Create MQTT instance
-            this._mqtt = new MQTT(this._mqtt_connection_options)
-        }
-        else {
-            console.error("Subscribtions amount and callback amount does not match.")
-        }
+        //Create MQTT instance
+        this._mqtt = new MQTT(this._mqtt_connection_options)
     }
 
     public publish(topic: string, payload: object, retained: boolean = false) {
@@ -48,17 +51,18 @@ export class MQTTHandler {
         const mqtt_instance: MQTTHandler = extra
         const topic: string = msg.destinationName
         const json_payload: object = JSON.parse(msg.payloadString)
-        console.log(topic)
-        console.log(topic.split("boi"))
 
-        switch (topic) {
-            case mqtt_instance._subscribtions[0]: //Dashboard realtime datastream
-                mqtt_instance._subscribtion_callbacks[0](topic, json_payload, mqtt_instance._subscribtion_callbacks_extra[0])
-                break
-
-            case mqtt_instance._subscribtions[1]: //Status data
-                mqtt_instance._subscribtion_callbacks[1](topic, json_payload, mqtt_instance._subscribtion_callbacks_extra[1])
-                break
+        //Find topic match and decide where to sent it.
+        // Go through each subscribtionsData
+        for (const subscribtionData of mqtt_instance._subscribtionsData) {
+            //Go through each subscribtion
+            for (const subscribtion of subscribtionData.subscribtions) {
+                if (subscribtion == topic) {
+                    //Found match so do callback and return.
+                    subscribtionData.callback(topic, json_payload, subscribtionData.callback_extra)
+                    return
+                }
+            }
         }
     }
 }

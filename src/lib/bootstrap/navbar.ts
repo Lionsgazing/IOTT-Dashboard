@@ -6,7 +6,9 @@ import { isColorHex } from "./color_identifier"
 export type NavbarData = {
     title: string,
     title_color: string,
-    navbar_color: string
+    navbar_color: string,
+    background_color: string,
+    vertical: boolean
 
     NavbarItems: NavbarItem[]
 }
@@ -16,7 +18,6 @@ export class Navbar {
     protected _Navbar: HTMLElement
     protected _NavbarContainer: HTMLDivElement
     protected _NavbarBrand: HTMLAnchorElement
-    protected _NavbarItemContainer: HTMLUListElement
 
     //Data & Router
     private _data: NavbarData
@@ -32,8 +33,14 @@ export class Navbar {
         this._router = router
 
         //Create needed elements
-        this._Navbar = dom.header("navbar navbar-expand-lg bg-dark")
-        this._NavbarContainer = dom.div("container-fluid")
+        this._Navbar = dom.header("navbar navbar-expand-lg")
+        if (isColorHex(this._data.background_color)) {
+            this._Navbar.style.backgroundColor = this._data.background_color
+        }
+        else {
+            this._Navbar.className += " " + this._data.background_color
+        }
+
 
         this._NavbarBrand = dom.a("navbar-brand", this._data.title)
 
@@ -44,27 +51,53 @@ export class Navbar {
             this._NavbarBrand.className += " " + this._data.title_color
         }
 
-        //Create container for navbar items
-        this._NavbarItemContainer = dom.ul("navbar-nav me-auto mb-2 mb-lg-0")
-        
-        //Add NavbarItems
-        const Items = this._data.NavbarItems
-        for (let i = 0; i < this._data.NavbarItems.length; i++) {
-            //Get NavbarItem and append it to the Navbar 
-            const Item = Items[i]
-            this._NavbarItemContainer.appendChild(Item.NavbarItem)
+        if (this._data.vertical) {
+            this._NavbarContainer = dom.div("row")
+            this._NavbarContainer.appendChild(this._NavbarBrand)
 
-            //Add a route for this NavbarItem
-            router.AddRoute({route: Item.RouteDestination, content: Item.RouteContent})
+            //Add NavbarItems
+            const Items = this._data.NavbarItems
+            for (let i = 0; i < this._data.NavbarItems.length; i++) {
+                //Create container for navbar items
+                const NavbarItemContainer = dom.ul("navbar-nav me-auto mb-2 mb-lg-0")
+                //Get NavbarItem and append it to the Navbar 
+                const Item = Items[i]
+                NavbarItemContainer.appendChild(Item.NavbarItem)
+                this._NavbarContainer.appendChild(NavbarItemContainer)  
 
-            //Setup the onclick functionality
-            Item.SetOnClickCallback(Navbar.callback, i, this)
+                //Add a route for this NavbarItem
+                router.AddRoute({route: Item.RouteDestination, content: Item.RouteContent})
+
+                //Setup the onclick functionality
+                Item.SetOnClickCallback(Navbar.callback, i, this)
+            }
+
+            this._Navbar.appendChild(this._NavbarContainer)   
         }
+        else {
+            this._NavbarContainer = dom.div("container-fluid")
+            this._NavbarContainer.appendChild(this._NavbarBrand)
 
-        //Stich them together
-        this._NavbarContainer.appendChild(this._NavbarBrand)
-        this._NavbarContainer.appendChild(this._NavbarItemContainer)
-        this._Navbar.appendChild(this._NavbarContainer)    
+            const NavbarItemContainer = dom.ul("navbar-nav me-auto mb-2 mb-lg-0")
+            
+            //Add NavbarItems
+            const Items = this._data.NavbarItems
+            for (let i = 0; i < this._data.NavbarItems.length; i++) {
+                //Get NavbarItem and append it to the Navbar 
+                const Item = Items[i]
+                NavbarItemContainer.appendChild(Item.NavbarItem)
+
+                //Add a route for this NavbarItem
+                router.AddRoute({route: Item.RouteDestination, content: Item.RouteContent})
+
+                //Setup the onclick functionality
+                Item.SetOnClickCallback(Navbar.callback, i, this)
+            }
+
+            //Stich them together
+            this._NavbarContainer.appendChild(NavbarItemContainer)
+            this._Navbar.appendChild(this._NavbarContainer)    
+        }
     }
 
     static callback(ev: Event, id: number, item: NavbarItem, nav: Navbar) {

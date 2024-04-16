@@ -1,3 +1,4 @@
+import { MQTTConfig } from "../../config"
 import { dom } from "../../lib/dom/dom"
 
 export class StatusPage {
@@ -7,9 +8,12 @@ export class StatusPage {
         return this._Container
     }
     
-    constructor() {
+    constructor(mqtt_config: MQTTConfig) {
         //Create container
         this._Container = dom.div("d-flex flex-grow-1 p-4")
+
+        //Row container
+        const row_container = dom.div("col")
 
         //Create UI Layout        
         const device_status_header = dom.h2("MQTT Device Status")
@@ -19,7 +23,8 @@ export class StatusPage {
          
 
         //this._Container.appendChild(device_status_header)
-        this._Container.appendChild(row0)
+        row_container.appendChild(row0)
+        this._Container.appendChild(row_container)
     }
 
     public async Setup() {

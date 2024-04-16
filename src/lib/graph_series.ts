@@ -40,7 +40,7 @@ export class Serie {
         this._encoding = encoding
         this._sampling = sampling
 
-        this._buffer = new graph_buffer(encoding.x[0], encoding.y.length, max_rows)
+        this._buffer = new graph_buffer(encoding.x[0], encoding.y.length + encoding.x.length, max_rows)
     }
 
     public toEcharts() {

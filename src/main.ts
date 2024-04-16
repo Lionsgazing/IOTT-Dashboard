@@ -6,8 +6,15 @@ import {Router} from './lib/router'
 import { DashboardPage } from './pages/dashboard/dashboard_page'
 import { StatusPage } from './pages/status/status_page'
 import { SettingsPage } from './pages/settings/settings_page'
-import { MQTTHandler } from './pages/MQTTHandler'
+import { MQTTHandler, SubscribtionsData } from './pages/MQTTHandler'
 import { mqtt_debug } from './mqtt_debug'
+import { DashboardConfig, MQTTConfig } from './config'
+
+//Import config
+import config from './config.json'
+const mqtt_config: MQTTConfig = config.mqtt_config
+const dashboard_config: DashboardConfig = config.dashboard_config
+
 
 // Setup content that is shared between all routes
 
@@ -26,28 +33,35 @@ const router = new Router({
 })
 
 //Create pages
-const Dashboard = new DashboardPage()
-const Status = new StatusPage()
+const Dashboard = new DashboardPage(dashboard_config)
+const Status = new StatusPage(mqtt_config)
 const Settings = new SettingsPage()
 
+//Derive subscribtions from mqtt_config
+const subscribtionData: SubscribtionsData[] = []
+for (const device of mqtt_config.devices) { 
+    subscribtionData.push({
+        subscribtions: [mqtt_config.base_topic + device.data_topic],
+        callback: DashboardPage.onMqttMessage,
+        callback_extra: [Dashboard, device.id]
+    })
+}
+
 //Setup MQTT handler and link it to the relevant modules/pages
-const MQTTManager = new MQTTHandler(
-    ["IOTT/Data/#", "IOTT/Status/#"], 
-    [DashboardPage.onMqttMessage, StatusPage.onMqttMessage], 
-    [Dashboard, Settings]
-)
+const MQTTManager = new MQTTHandler(subscribtionData)
 
 //Debug
 const debug = new mqtt_debug(MQTTManager, 500, 0.1)
 void debug.debug()
-
 
 //Create navbar
 // Note - Navbar creates routes dynamically when adding a NavbarItem.
 const navbar = new Navbar({
     title: "IOTT-Dashboard",
     title_color: "#FFFFFF",
+    background_color: "bg-dark",
     navbar_color: "",
+    vertical: false,
     NavbarItems: [
         new NavbarItem({
             title: "Home", 
