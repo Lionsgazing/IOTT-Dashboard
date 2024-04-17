@@ -9,6 +9,7 @@ export type NavbarData = {
     navbar_color: string,
     background_color: string,
     vertical: boolean
+    alignemnt?: string
 
     NavbarItems: NavbarItem[]
 }
@@ -52,14 +53,18 @@ export class Navbar {
         }
 
         if (this._data.vertical) {
-            this._NavbarContainer = dom.div("row")
+            //Create container
+            this._NavbarContainer = dom.div("d-flex flex-column flex-grow-1")
+
+            //Append brand
             this._NavbarContainer.appendChild(this._NavbarBrand)
 
             //Add NavbarItems
             const Items = this._data.NavbarItems
             for (let i = 0; i < this._data.NavbarItems.length; i++) {
                 //Create container for navbar items
-                const NavbarItemContainer = dom.ul("navbar-nav me-auto mb-2 mb-lg-0")
+                const NavbarItemContainer = dom.ul("navbar-nav flex-grow-1")
+                NavbarItemContainer.className += " " + this._data.alignemnt
                 //Get NavbarItem and append it to the Navbar 
                 const Item = Items[i]
                 NavbarItemContainer.appendChild(Item.NavbarItem)
@@ -118,6 +123,6 @@ export class Navbar {
         const dest_url = base_url + Items[id].RouteDestination
 
         //Use router to route to that url
-        nav._router.Route(dest_url)
+        nav._router.Route(dest_url, item.UpdateURL)
     }
 }

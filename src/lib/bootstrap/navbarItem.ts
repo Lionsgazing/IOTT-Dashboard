@@ -8,6 +8,7 @@ export type NavbarItemConfig = {
     unactive_color: string
 
     route_destination: string
+    update_url: boolean
     route_content: () => Promise<HTMLElement>
     reset?: () => void
 }
@@ -34,6 +35,10 @@ export class NavbarItem {
 
     get RouteDestination() {
         return this._config.route_destination
+    }
+
+    get UpdateURL() {
+        return this._config.update_url
     }
 
     get RouteContent() {

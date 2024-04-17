@@ -25,22 +25,30 @@ export class mqtt_debug {
 
             const payload0 = {
                 timestamp: new Date().getTime(),
-                data: data0,
+                temperature: data0,
+                pressure: -data0,
+                humidity: data0 + 0.5 
             } 
 
             const payload1 = {
                 timestamp: new Date().getTime(),
-                data: data1,
+                temperature: data1,
+                pressure: -data1,
+                humidity: data1 + 0.5
             }  
             
             const payload2 = {
                 timestamp: new Date().getTime(),
-                data: data2,
+                temperature: data2,
+                pressure: -data2,
+                humidity: data2 + 0.5
             }  
 
             const payload3 = {
                 timestamp: new Date().getTime(),
-                data: data3,
+                temperature: data3,
+                pressure: -data3,
+                humidity: data3 + 0.5,
             }  
 
             this._mqtt_instance.publish("raspberry/Aalborg/sense-hat/readings/all-readings", payload0, false)

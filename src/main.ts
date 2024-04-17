@@ -68,6 +68,7 @@ const navbar = new Navbar({
             active_color: "#FFFFFF", 
             unactive_color: "#6c757d", 
             route_destination: "/", 
+            update_url: true,
             route_content: async () => {
                 await Dashboard.Setup()
                 return Dashboard.Content
@@ -78,6 +79,7 @@ const navbar = new Navbar({
             active_color: "#FFFFFF", 
             unactive_color: "#6c757d", 
             route_destination: "/Status", 
+            update_url: true,
             route_content: async () => {
                 await Status.Setup()
                 return Status.Content
@@ -88,6 +90,7 @@ const navbar = new Navbar({
             active_color: "#FFFFFF", 
             unactive_color: "#6c757d", 
             route_destination: "/Settings", 
+            update_url: true,
             route_content: async () => {
                 await Settings.Setup()
                 return Settings.Content

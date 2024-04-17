@@ -13,6 +13,10 @@ export type RouterConfig = {
 export class Router {
     private _config: RouterConfig
 
+    get Routes() {
+        return this._config.routes
+    }
+
     private _404_not_found_content: HTMLElement
 
     constructor(config: RouterConfig) {
@@ -24,7 +28,7 @@ export class Router {
         }
     }
 
-    public async Route(route_addr: string) {
+    public async Route(route_addr: string, update_url: boolean = true) {
         const Routes = this._config.routes!
         
         //Find a matching route
@@ -34,8 +38,10 @@ export class Router {
             const dest_url = base_url + Route.route
 
             if (dest_url == route_addr) {
-                //Update URL without page reload
-                window.history.replaceState("", "", dest_url) 
+                if (update_url) {
+                    //Update URL without page reload
+                    window.history.replaceState("", "", dest_url) 
+                }
 
                 //Get the target container
                 const target_container = this._config.target_container
