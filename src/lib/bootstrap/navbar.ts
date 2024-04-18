@@ -42,7 +42,6 @@ export class Navbar {
             this._Navbar.className += " " + this._data.background_color
         }
 
-
         this._NavbarBrand = dom.a("navbar-brand", this._data.title)
 
         if (isColorHex(this._data.title_color)) {
@@ -103,6 +102,22 @@ export class Navbar {
             this._NavbarContainer.appendChild(NavbarItemContainer)
             this._Navbar.appendChild(this._NavbarContainer)    
         }
+    }
+
+    public setActive(route_destination: string) {
+        const Items = this._data.NavbarItems
+
+        //Set all to not being active first.
+        for (let i = 0; i < Items.length; i++) {
+            const Item = Items[i]
+            if (Item.RouteDestination == route_destination) {
+                Item.IsActive = true
+            }
+            else {
+                Item.IsActive = false
+            }
+        }
+
     }
 
     static callback(ev: Event, id: number, item: NavbarItem, nav: Navbar) {

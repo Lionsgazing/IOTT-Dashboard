@@ -11,33 +11,44 @@ import { Router } from "../../lib/router"
 
 
 export class DashboardPage {
-    private _Container: HTMLDivElement
+
 
     private _GraphContainers: HTMLDivElement[]
     private _Graphs: Graph[]
     private _isLoaded: boolean
     private _config: DashboardConfig
-    private _router: Router
 
+    private _TopContainer: HTMLDivElement
+    private _SidebarContainer: HTMLDivElement
+    private _ContentContainer: HTMLDivElement
+
+    private _sidebar: Sidebar
 
     get IsLoaded() {
         return this._isLoaded
     }
 
     get Content() {
-        return this._Container
+        return this._TopContainer
     }
 
     constructor(config: DashboardConfig) {
-        //Create container
-        this._Container = dom.div("d-flex flex-grow-1")        
-        this._GraphContainers = [] 
-        this._Graphs = []
+        //Save given values
         this._config = config
 
-        const sidebar_container = dom.div("d-flex flex-column")
-        sidebar_container.style.maxWidth = "250px"
-        const content_container = dom.div("d-flex flex-column flex-grow-1")
+        //Create containers
+        this._TopContainer = dom.div("d-flex flex-grow-1")        
+        this._SidebarContainer = dom.div("d-flex flex-column")
+        this._ContentContainer = dom.div("d-flex flex-column flex-grow-1")
+
+        //Set style elements for containers
+        this._SidebarContainer.style.maxWidth = "250px"
+        
+        //Craete storage
+        this._GraphContainers = [] 
+        this._Graphs = []
+
+    
 
         //Create graphs and their corresponding containers and navigation.
         let navbar_items: NavbarItem[] = []
@@ -63,7 +74,12 @@ export class DashboardPage {
             }))
         }
 
-        const sidebar = new Sidebar({
+        //Append the content
+        this._TopContainer.appendChild(this._SidebarContainer)
+        this._TopContainer.appendChild(this._ContentContainer)
+
+        //Create sidebar
+        this._sidebar = new Sidebar({
             title: "Graph Selection",
             title_color: "#000000",
             background_color: "#e9ecef",
@@ -71,14 +87,9 @@ export class DashboardPage {
             alignment: "justify-content-start",
             navitems: navbar_items
         },
-        content_container)
+        this._ContentContainer)
 
-        this._router = sidebar.Router
-
-        sidebar_container.appendChild(sidebar.Content)
-
-        this._Container.appendChild(sidebar_container)
-        this._Container.appendChild(content_container)
+        this._SidebarContainer.appendChild(this._sidebar.Content)
 
 
         this._isLoaded = false
@@ -110,9 +121,7 @@ export class DashboardPage {
             window.onresize = () => {
                 graph.Resize()
             }
-        }
-
-        
+        }        
     }
 
     static onMqttMessage(topic: string, json_payload: object, extra: any) {

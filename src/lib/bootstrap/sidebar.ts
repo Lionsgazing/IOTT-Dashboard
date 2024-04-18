@@ -16,9 +16,11 @@ export type SidebarData = {
 
 export class Sidebar {
     private _Container: HTMLDivElement
-    private _TargetContainer: HTMLDivElement
+    private _ContentTarget: HTMLDivElement
     private _Data: SidebarData
     private _router: Router
+
+    private _nav: Navbar
 
     get Router() {
         return this._router
@@ -31,9 +33,9 @@ export class Sidebar {
     private _SidebarHeaderContainer: HTMLDivElement
     private _SidebarHeader: HTMLHeadingElement
 
-    constructor(data: SidebarData, target_container: HTMLDivElement) {
+    constructor(data: SidebarData, content_target: HTMLDivElement) {
         this._Data = data
-        this._TargetContainer = target_container
+        this._ContentTarget = content_target
 
         //Create top container
         this._Container = dom.div("offcanvas offcanvas-start show bg-text flex-grow-1")
@@ -47,9 +49,10 @@ export class Sidebar {
         const body = dom.div("offcanvas-body")
         body.style.backgroundColor = this._Data.background_color
 
-        this._router = new Router({target_container: target_container})
+        this._router = new Router({target_container: this._ContentTarget})
+        console.log(this._ContentTarget)
         
-        const nav = new Navbar({
+        this._nav = new Navbar({
             title: this._Data.title,
             title_color: this._Data.title_color,
             background_color: "",
@@ -59,21 +62,21 @@ export class Sidebar {
             NavbarItems: this._Data.navitems
         }, this._router)
 
-        body.appendChild(nav.Content)
-
-        /*this.addNav(body)
-        this.addNav(body)
-        this.addNav(body)
-        this.addNav(body)*/
-
-        
-        //body.appendChild(body)
-
-
+        //Piece together containers and content
+        body.appendChild(this._nav.Content)
         this._Container.appendChild(body)
-
-
         this._Container.appendChild(this._SidebarHeaderContainer)
+
+        //Activate the first item.
+        if (this._router.Routes?.length! > 0) {
+            const route = this._router.Routes![0].route
+            this.setActive(route)
+            this._router.Route(window.location.origin + route, false)
+        }
+    }
+
+    public setActive(route_destination: string) {
+        this._nav.setActive(route_destination)
     }
 
 
