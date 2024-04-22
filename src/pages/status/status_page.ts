@@ -1,4 +1,5 @@
 import { MQTTConfig } from "../../config"
+import { SmartText } from "../../lib/bootstrap/smarttext"
 import { dom } from "../../lib/dom/dom"
 
 export class StatusPage {
@@ -20,10 +21,15 @@ export class StatusPage {
         const device_status_header_seperator = dom.hr()
         const column_device_status = dom.div("col", [device_status_header, device_status_header_seperator])
         const row0 = dom.div("row", [column_device_status])
+
+        const text = new SmartText({type: "h4", contents: ["Hi ", "there"], colors: ["", "#FF00FF"]})
+        const row1 = dom.div("row", [text.Content])
+
          
 
         //this._Container.appendChild(device_status_header)
         row_container.appendChild(row0)
+        row_container.appendChild(row1)
         this._Container.appendChild(row_container)
     }
 

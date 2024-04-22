@@ -34,23 +34,26 @@
     },
 
     "mqtt_config": {
-        "base_topic": "raspberry",
         "devices": [
             {
                 "id": "Aalborg",
-                "data_topic": "/Aalborg/sense-hat/readings/all_readings"
+                "data_topic": "raspberry/Aalborg/sense-hat/readings/all_readings",
+                "status_topic": "status/raspberry-aalborg/connection"
             },
             {
                 "id": "Copenhagen",
-                "data_topic": "/Copenhagen/sense-hat/readings/all_readings"
+                "data_topic": "raspberry/Copenhagen/sense-hat/readings/all_readings",
+                "status_topic": "status/raspberry-copenhagen/connection"
             },
             {
                 "id": "Silkeborg",
-                "data_topic": "/Silkeborg/sense-hat/readings/all_readings"
+                "data_topic": "raspberry/Silkeborg/sense-hat/readings/all_readings",
+                "status_topic": "status/raspberry-silkeborg/connection"
             },
             {
                 "id": "Aarhus",
-                "data_topic": "/Aarhus/sense-hat/readings/all_readings"
+                "data_topic": "raspberry/Aarhus/sense-hat/readings/all_readings",
+                "status_topic": "status/raspberry-aarhus/connection"
             }
         ]
     }

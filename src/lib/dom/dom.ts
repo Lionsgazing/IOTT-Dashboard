@@ -114,4 +114,9 @@ export namespace dom {
         const hr = document.createElement("hr")
         return hr
     }
+
+    export function span() {
+        const span = document.createElement("span")
+        return span
+    }
 }

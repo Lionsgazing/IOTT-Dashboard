@@ -40,11 +40,21 @@ const Settings = new SettingsPage()
 //Derive subscribtions from mqtt_config
 const subscribtionData: SubscribtionsData[] = []
 for (const device of mqtt_config.devices) { 
+    //Push data topics
     subscribtionData.push({
-        subscribtions: [mqtt_config.base_topic + device.data_topic],
+        subscribtions: [device.data_topic],
         callback: DashboardPage.onMqttMessage,
         callback_extra: [Dashboard, device.id]
     })
+
+    //Push status topics
+    if (device.status_topic !== "") {
+        subscribtionData.push({
+            subscribtions: [device.status_topic],
+            callback: StatusPage.onMqttMessage,
+            callback_extra: [Status, device.id]
+        })
+    }
 }
 
 //Setup MQTT handler and link it to the relevant modules/pages

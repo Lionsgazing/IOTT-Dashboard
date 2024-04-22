@@ -1,9 +1,9 @@
 export type MQTTConfig = {
-    base_topic: string
     devices: 
         {
             id: string
             data_topic: string
+            status_topic: string
         }[]
 }
 
