@@ -38,19 +38,19 @@
         "devices": [
             {
                 "id": "Aalborg",
-                "data_topic": "/Aalborg/sense-hat/readings/all-readings"
+                "data_topic": "/Aalborg/sense-hat/readings/all_readings"
             },
             {
                 "id": "Copenhagen",
-                "data_topic": "/Copenhagen/sense-hat/readings/all-readings"
+                "data_topic": "/Copenhagen/sense-hat/readings/all_readings"
             },
             {
                 "id": "Silkeborg",
-                "data_topic": "/Silkeborg/sense-hat/readings/all-readings"
+                "data_topic": "/Silkeborg/sense-hat/readings/all_readings"
             },
             {
                 "id": "Aarhus",
-                "data_topic": "/Aarhus/sense-hat/readings/all-readings"
+                "data_topic": "/Aarhus/sense-hat/readings/all_readings"
             }
         ]
     }

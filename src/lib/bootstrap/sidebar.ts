@@ -42,11 +42,11 @@ export class Sidebar {
         this._Container.style.position = "relative"
 
         //Create header
-        this._SidebarHeaderContainer = dom.div("offcanvas header")
+        this._SidebarHeaderContainer = dom.div("offcanvas header p-0")
 
         
         //Nav
-        const body = dom.div("offcanvas-body")
+        const body = dom.div("offcanvas-body pt-2")
         body.style.backgroundColor = this._Data.background_color
 
         this._router = new Router({target_container: this._ContentTarget})

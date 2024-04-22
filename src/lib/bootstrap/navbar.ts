@@ -34,7 +34,13 @@ export class Navbar {
         this._router = router
 
         //Create needed elements
-        this._Navbar = dom.header("navbar navbar-expand-lg")
+        if (this._data.vertical) {
+            this._Navbar = dom.header("navbar navbar-expand-lg p-0")
+        }
+        else {
+            this._Navbar = dom.header("navbar navbar-expand-lg")
+        }
+        
         if (isColorHex(this._data.background_color)) {
             this._Navbar.style.backgroundColor = this._data.background_color
         }

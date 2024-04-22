@@ -1,12 +1,9 @@
 import { DashboardConfig } from "../../config"
-import { Navbar } from "../../lib/bootstrap/navbar"
 import { NavbarItem } from "../../lib/bootstrap/navbarItem"
 import { Sidebar } from "../../lib/bootstrap/sidebar"
-import { SidebarItem } from "../../lib/bootstrap/sidebarItem"
 import { dom } from "../../lib/dom/dom"
 import { Graph } from "../../lib/graph"
 import {Serie} from '../../lib/graph_series'
-import { Router } from "../../lib/router"
 
 
 
@@ -48,8 +45,6 @@ export class DashboardPage {
         this._GraphContainers = [] 
         this._Graphs = []
 
-    
-
         //Create graphs and their corresponding containers and navigation.
         let navbar_items: NavbarItem[] = []
         for (const graph_info of config.graphs) {
@@ -58,7 +53,7 @@ export class DashboardPage {
             this._GraphContainers.push(graph_container)
 
             //Create graph
-            const graph = new Graph(graph_container)
+            const graph = new Graph(graph_container, graph_info.title)
             this._Graphs.push(graph)
 
             //Create navbar item
@@ -100,6 +95,10 @@ export class DashboardPage {
             //Refine this since it clearly works it just activates a little too often :).
             const mutObs = new MutationObserver(() => {
                 graph.Setup(
+                    {
+                        show: true,
+                        text: graph.Title
+                    },
                     {
                         name: "Timestamp",
                         type: "time"

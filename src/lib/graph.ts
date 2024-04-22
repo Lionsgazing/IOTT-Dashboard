@@ -12,6 +12,8 @@ export class Graph {
 
     private _IsLoaded: boolean
 
+    private _title: string
+
     get Content() {
         return this._Container
     }
@@ -24,11 +26,16 @@ export class Graph {
         return this._GraphSeries
     }
 
-    constructor(target_container: HTMLDivElement) {
+    get Title() {
+        return this._title
+    }
+
+    constructor(target_container: HTMLDivElement, title: string) {
         //Save container
         this._Container = target_container
         this._Graph = echarts.init(this._Container)
         this._IsLoaded = false
+        this._title = title
 
         //Create series containers
         this._GraphSeriesIds = []
@@ -65,7 +72,19 @@ export class Graph {
         this._Graph.getDom().style.width = width
     }
 
-    public Setup(xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
+    public Setup(title: object | undefined = undefined, xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
+        let titleGraph
+        if (title === undefined) {
+            titleGraph = {
+                show: true,
+                text: "Title",
+                subtext: "Sub title"
+            }
+        }
+        else {
+            titleGraph = title
+        }
+        
         let xAxisGraph
         if (xAxis === undefined) {
             xAxisGraph = {
@@ -90,11 +109,7 @@ export class Graph {
 
         //Create echarts graph
         this._Graph.setOption({
-            title: {
-                show: true,
-                text: "Title",
-                subtext: "Sub text",
-            },
+            title: titleGraph,
             xAxis: xAxisGraph,
             yAxis: yAxisGraph,
             grid: {

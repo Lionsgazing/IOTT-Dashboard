@@ -1,4 +1,5 @@
 import { MQTT, MQTT_Connection_Options, Message } from "../lib/mqtt.ts";
+import { replaceAll } from "../lib/replaceAll.ts";
 
 export type SubscribtionsData = {
     subscribtions: string[]
@@ -20,16 +21,18 @@ export class MQTTHandler {
             }
         }
 
+        console.log(total_subscribtions)
+
         //Save subscribtion data
         this._subscribtionsData = subscribtionsData
 
         //Create connection options for the MQTT
         this._mqtt_connection_options = {
-            host: "127.0.0.1",
-            port: 8883, //Websocket port on broker
-            username: "",
-            password: "",
-            useSSL: false,
+            host: "wss.niels-bjorn.dk",
+            port: 443, //Websocket port on broker
+            username: "rpimqttclientb",
+            password: "pD2l0bYEw",
+            useSSL: true,
 
             subscribtions: total_subscribtions,
 
@@ -50,7 +53,18 @@ export class MQTTHandler {
     static onMessage(msg: Message, extra: any) {
         const mqtt_instance: MQTTHandler = extra
         const topic: string = msg.destinationName
-        const json_payload: object = JSON.parse(msg.payloadString)
+
+        //Ensure that "" are used and not ''.
+        const payloadstr = replaceAll(msg.payloadString, "'", '"')
+        
+        let json_payload: object = {}
+        try {
+            json_payload = JSON.parse(payloadstr)
+        }
+        catch {
+            console.log("JSON payload parsing failed...")
+        }
+
 
         //Find topic match and decide where to sent it.
         // Go through each subscribtionsData
