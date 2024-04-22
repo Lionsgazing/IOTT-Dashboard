@@ -139,7 +139,7 @@ export class DashboardPage {
         //Extract keys, values and the timestamp
         const keys = Object.keys(payload)
         const values = Object.values(payload)
-        const timestamp = payload.timestamp
+        const timestamp = payload.timestamp * 1000 //Adjust the given timestamp format to something Echarts understand.
 
         
         //Find the target index which matches the graph we want to edit.
@@ -161,6 +161,7 @@ export class DashboardPage {
 
         //Get targeted graph:
         const graph = page_instance._Graphs[target_index]
+        const display = page_instance._config.graphs[target_index].display
 
         //Now add series and insert data depending on the keys received. We only add series if they are missing.
         for (let i = 0; i < keys.length; i++) {
@@ -170,15 +171,27 @@ export class DashboardPage {
             //Check that the key is not timestamp
             if (key !== "timestamp") {
                 //Check that the key does not exist as an id in the graph series.
-                if (!(key in graph.Series)) {
-                    graph.AddSeries([new Serie(key, key, "line", {x: [0], y: [1]}, "lttb", 100)])
+                if (page_instance.locate(key, display) >= 0) {
+                    if (key in graph.Series == false) {
+                        graph.AddSeries([new Serie(key, key, "line", {x: [0], y: [1]}, "lttb", 100)])
+                    }
+    
+                    graph.Series[key].Buffer.push([timestamp, value])
                 }
-
-                graph.Series[key].Buffer.push([timestamp, value])
             }
         }   
     
         //Update graph
         graph.Update()        
+    }
+
+    private locate(target: any, arr: any[]) {
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] == target) {
+                return i
+            }
+        }
+
+        return -1
     }
 }

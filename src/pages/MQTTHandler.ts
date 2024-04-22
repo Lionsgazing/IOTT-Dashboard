@@ -63,6 +63,8 @@ export class MQTTHandler {
         }
         catch {
             console.log("JSON payload parsing failed...")
+            console.log("Passing the raw payload str")
+            json_payload = {"raw": payloadstr}
         }
 
 
