@@ -12,6 +12,13 @@ export class mqtt_debug {
         this._last_x = 0
     }
     async debug() {
+        //Set status
+        await new Promise(f => setTimeout(f, this._update_time_ms));
+        this._mqtt_instance.publish("status/raspberry-aalborg/connection", {status: "online"}, true)
+        this._mqtt_instance.publish("status/raspberry-copenhagen/connection", {status: "online"}, true)
+        this._mqtt_instance.publish("status/raspberry-silkeborg/connection", {status: "online"}, true)
+        this._mqtt_instance.publish("status/raspberry-aarhus/connection", {status: "online"}, true)
+
         while(true) {
             await new Promise(f => setTimeout(f, this._update_time_ms));
     
@@ -51,10 +58,10 @@ export class mqtt_debug {
                 humidity: data3 + 0.5,
             }  
 
-            this._mqtt_instance.publish("raspberry/Aalborg/sense-hat/readings/all-readings", payload0, false)
-            this._mqtt_instance.publish("raspberry/Copenhagen/sense-hat/readings/all-readings", payload1, false)
-            this._mqtt_instance.publish("raspberry/Silkeborg/sense-hat/readings/all-readings", payload2, false)
-            this._mqtt_instance.publish("raspberry/Aarhus/sense-hat/readings/all-readings", payload3, false)
+            this._mqtt_instance.publish("raspberry/Aalborg/sense-hat/readings/all_readings", payload0, false)
+            this._mqtt_instance.publish("raspberry/Copenhagen/sense-hat/readings/all_readings", payload1, false)
+            this._mqtt_instance.publish("raspberry/Silkeborg/sense-hat/readings/all_readings", payload2, false)
+            this._mqtt_instance.publish("raspberry/Aarhus/sense-hat/readings/all_readings", payload3, false)
         }
     }
 }

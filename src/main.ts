@@ -58,11 +58,12 @@ for (const device of mqtt_config.devices) {
 }
 
 //Setup MQTT handler and link it to the relevant modules/pages
+console.log(subscribtionData)
 const MQTTManager = new MQTTHandler(subscribtionData)
 
 //Debug
-//const debug = new mqtt_debug(MQTTManager, 500, 0.1)
-///void debug.debug()
+const debug = new mqtt_debug(MQTTManager, 500, 0.1)
+void debug.debug()
 
 //Create navbar
 // Note - Navbar creates routes dynamically when adding a NavbarItem.

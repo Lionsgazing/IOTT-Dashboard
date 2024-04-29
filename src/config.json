@@ -5,28 +5,32 @@
             {
                 "title": "Aalborg",
                 "id_link": "Aalborg",
-                "display": ["temperature", "humidity", "pressure"],
+                "display_y_axis": ["temperature", "humidity", "pressure"],
+                "display_x_axis": "timestamp",
                 "width": "",
                 "height": "200"
             },
             {
                 "title": "Copenhagen",
                 "id_link": "Copenhagen",
-                "display": ["temperature", "humidity", "pressure"],
+                "display_y_axis": ["temperature", "humidity", "pressure"],
+                "display_x_axis": "timestamp", 
                 "width": "",
                 "height": "200"
             },
             {
                 "title": "Silkeborg",
                 "id_link": "Silkeborg",
-                "display": ["temperature", "humidity", "pressure"],
+                "display_y_axis": ["temperature", "humidity", "pressure"],
+                "display_x_axis": "timestamp",
                 "width": "",
                 "height": "200"
             },
             {
                 "title": "Aarhus",
                 "id_link": "Aarhus",
-                "display": ["temperature", "humidity", "pressure"],
+                "display_y_axis": ["temperature", "humidity", "pressure"],
+                "display_x_axis": "timestamp",
                 "width": "",
                 "height": "200"
             }

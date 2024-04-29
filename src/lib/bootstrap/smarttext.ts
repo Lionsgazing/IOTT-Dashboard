@@ -55,6 +55,11 @@ export class SmartText {
         this._data.contents = contents
         this._data.colors = colors
 
+        //Remove elements from the container first
+        while (this._Container.firstChild) {
+            this._Container.removeChild(this._Container.firstChild)
+        }
+
         //Overwrite existing elements by creating entierly new ones!
         this._textElements = []
         for (let i = 0; i < this._data.contents.length; i++) {

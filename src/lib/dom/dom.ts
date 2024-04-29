@@ -119,4 +119,11 @@ export namespace dom {
         const span = document.createElement("span")
         return span
     }
+
+    export function label(className: string, content: string) {
+        const label = document.createElement("label")
+        label.className = className
+        label.textContent = content
+        return label
+    }
 }

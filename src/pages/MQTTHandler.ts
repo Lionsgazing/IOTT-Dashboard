@@ -21,18 +21,16 @@ export class MQTTHandler {
             }
         }
 
-        console.log(total_subscribtions)
-
         //Save subscribtion data
         this._subscribtionsData = subscribtionsData
 
         //Create connection options for the MQTT
         this._mqtt_connection_options = {
-            host: "wss.niels-bjorn.dk",
-            port: 443, //Websocket port on broker
-            username: "rpimqttclientb",
-            password: "pD2l0bYEw",
-            useSSL: true,
+            host: "127.0.0.1",//"wss.niels-bjorn.dk",
+            port: 8883,//443, //Websocket port on broker
+            username: "",//"rpimqttclientb",
+            password: "",//"pD2l0bYEw",
+            useSSL: false,//true,
 
             subscribtions: total_subscribtions,
 
@@ -66,7 +64,6 @@ export class MQTTHandler {
             console.log("Passing the raw payload str")
             json_payload = {"raw": payloadstr}
         }
-
 
         //Find topic match and decide where to sent it.
         // Go through each subscribtionsData

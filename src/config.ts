@@ -12,7 +12,8 @@ export type DashboardConfig = {
     graphs: {
         title: string
         id_link: string
-        display: string[]
+        display_y_axis: string[]
+        display_x_axis: string
         width: string
         height: string
     }[]

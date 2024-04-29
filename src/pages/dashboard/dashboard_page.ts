@@ -80,6 +80,7 @@ export class DashboardPage {
             background_color: "#e9ecef",
             navbar_color: "",
             alignment: "justify-content-start",
+            grow: true,
             navitems: navbar_items
         },
         this._ContentContainer)
@@ -161,7 +162,8 @@ export class DashboardPage {
 
         //Get targeted graph:
         const graph = page_instance._Graphs[target_index]
-        const display = page_instance._config.graphs[target_index].display
+        const display_x_axis = page_instance._config.graphs[target_index].display_x_axis
+        const display_y_axis = page_instance._config.graphs[target_index].display_y_axis
 
         //Now add series and insert data depending on the keys received. We only add series if they are missing.
         for (let i = 0; i < keys.length; i++) {
@@ -169,9 +171,9 @@ export class DashboardPage {
             const value = values[i]
 
             //Check that the key is not timestamp
-            if (key !== "timestamp") {
+            if (key !== display_x_axis) {
                 //Check that the key does not exist as an id in the graph series.
-                if (page_instance.locate(key, display) >= 0) {
+                if (page_instance.locate(key, display_y_axis) >= 0) {
                     if (key in graph.Series == false) {
                         graph.AddSeries([new Serie(key, key, "line", {x: [0], y: [1]}, "lttb", 100)])
                     }
@@ -180,7 +182,7 @@ export class DashboardPage {
                 }
             }
         }   
-    
+        
         //Update graph
         graph.Update()        
     }

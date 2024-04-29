@@ -12,6 +12,7 @@ export type SidebarData = {
     background_color: string
     navbar_color: string
     alignment?: string
+    grow?: boolean
 }
 
 export class Sidebar {
@@ -38,7 +39,10 @@ export class Sidebar {
         this._ContentTarget = content_target
 
         //Create top container
-        this._Container = dom.div("offcanvas offcanvas-start show bg-text flex-grow-1")
+        this._Container = dom.div("offcanvas offcanvas-start show bg-text")
+        if (this._Data.grow === true) {
+            this._Container.className += " " + "flex-grow-1"
+        }
         this._Container.style.position = "relative"
 
         //Create header

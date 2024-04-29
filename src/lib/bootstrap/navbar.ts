@@ -48,13 +48,18 @@ export class Navbar {
             this._Navbar.className += " " + this._data.background_color
         }
 
-        this._NavbarBrand = dom.a("navbar-brand", this._data.title)
+        if (this._data.title !== "") {
+            this._NavbarBrand = dom.a("navbar-brand", this._data.title)
 
-        if (isColorHex(this._data.title_color)) {
-            this._NavbarBrand.style.color = this._data.title_color
+            if (isColorHex(this._data.title_color)) {
+                this._NavbarBrand.style.color = this._data.title_color
+            }
+            else {
+                this._NavbarBrand.className += " " + this._data.title_color
+            }
         }
         else {
-            this._NavbarBrand.className += " " + this._data.title_color
+            this._NavbarBrand = dom.a("")
         }
 
         if (this._data.vertical) {
