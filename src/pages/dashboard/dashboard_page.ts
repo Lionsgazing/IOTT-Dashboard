@@ -4,6 +4,7 @@ import { Sidebar } from "../../lib/bootstrap/sidebar"
 import { dom } from "../../lib/dom/dom"
 import { Graph } from "../../lib/graph"
 import {Serie} from '../../lib/graph_series'
+import { AppSettings } from "../settings/settings"
 
 
 
@@ -29,7 +30,11 @@ export class DashboardPage {
         return this._TopContainer
     }
 
-    constructor(config: DashboardConfig) {
+    private _appSettings: AppSettings
+
+    constructor(config: DashboardConfig, appSettings: AppSettings) {
+        this._appSettings = appSettings
+
         //Save given values
         this._config = config
 
@@ -131,6 +136,11 @@ export class DashboardPage {
 
         //Check if we are loaded. If not reject
         if (!page_instance.IsLoaded) {
+            return
+        }
+
+        //Check if realtime is enabled
+        if (!page_instance._appSettings.Realtime) {
             return
         }
         

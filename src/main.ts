@@ -12,6 +12,7 @@ import { DashboardConfig, MQTTConfig } from './config'
 
 //Import config
 import config from './config.json'
+import { AppSettings } from './pages/settings/settings'
 const mqtt_config: MQTTConfig = config.mqtt_config
 const dashboard_config: DashboardConfig = config.dashboard_config
 
@@ -32,10 +33,13 @@ const router = new Router({
     target_container: top_container
 })
 
+//Create settings object
+const appSettings = new AppSettings()
+
 //Create pages
-const Dashboard = new DashboardPage(dashboard_config)
+const Dashboard = new DashboardPage(dashboard_config, appSettings)
 const Status = new StatusPage(mqtt_config)
-const Settings = new SettingsPage()
+const Settings = new SettingsPage(appSettings)
 
 //Derive subscribtions from mqtt_config
 const subscribtionData: SubscribtionsData[] = []

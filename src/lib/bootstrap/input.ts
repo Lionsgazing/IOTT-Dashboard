@@ -22,7 +22,7 @@ export class Input {
 
     private data: InputData
 
-    constructor(data: InputData, type: "text" | "plaintext" | "checkbox" | "radio" ) {
+    constructor(data: InputData, type: "text" | "plaintext" | "checkbox" | "radio" | "number" ) {
         this.data = data
         let className = "form-control"
         if (type === "text") {
@@ -30,6 +30,9 @@ export class Input {
         }
         else if (type == "plaintext"){
             className = "form-control-plaintext"
+        }
+        else if (type == "number") {
+            className = "form-control-number"
         }
         else {
             className = "form-check-input"
