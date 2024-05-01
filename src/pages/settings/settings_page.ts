@@ -1,3 +1,4 @@
+import { Button } from "../../lib/bootstrap/button"
 import { Checkbox } from "../../lib/bootstrap/checkbox"
 import { Input } from "../../lib/bootstrap/input"
 import { dom } from "../../lib/dom/dom"
@@ -12,6 +13,11 @@ export class SettingsPage {
     get Content() {
         return this._Container
     }
+
+    //UI Elements
+    private _graph_realtime_switch: Checkbox
+    private _graph_data_fetch_days_input: Input
+    private _graph_data_fetch_button: Button
 
     constructor(appSettings: AppSettings) {
         this._appSettings = appSettings
@@ -28,8 +34,8 @@ export class SettingsPage {
         GraphSettingsContainer.appendChild(graph_settings_header_seperator)
 
         //Realtime setting
-        const graph_realtime_switch = new Checkbox({title: "Realtime", type: "slider", onChange: SettingsPage.onRealtimeChange, onChangeExtra: this})
-        const graph_switches_container = dom.div("col pb-2", [graph_realtime_switch.Content])
+        this._graph_realtime_switch = new Checkbox({title: "Realtime", type: "slider", onChange: SettingsPage.onRealtimeChange, onChangeExtra: this})
+        const graph_switches_container = dom.div("col pb-2", [this._graph_realtime_switch.Content])
         GraphSettingsContainer.appendChild(graph_switches_container)
 
         //Data fetching settings
@@ -43,10 +49,14 @@ export class SettingsPage {
         GraphSettingsContainer.appendChild(graph_data_fetch_header)
         GraphSettingsContainer.appendChild(graph_data_fetch_header_seperator)
 
-        const graph_data_fetch_days_input_label = dom.h5("Data fetch days")
+        const graph_data_fetch_days_input_label = dom.h5("Data fetch hours")
         
-        const graph_data_fetch_days_input = new Input({size: {width: "25", height: "25"}}, "text")
-        const graph_data_fetch_row = dom.div("col", [graph_data_fetch_days_input.Input])
+        this._graph_data_fetch_days_input = new Input({size: {width: "25", height: "25"}}, "text")
+        this._graph_data_fetch_button = new Button({content: "Fetch", type: "button", colorPrefix: "primary", onClick: SettingsPage.onFetchDataButtonClicked, onClickExtra: this})
+        const graph_data_fetch_row = dom.div("d-flex flex-row", [
+            dom.div("d-flex flex-column flex-grow-1 pe-1", [this._graph_data_fetch_days_input.Input]), 
+            dom.div("d-flex flex-column ps-1", [this._graph_data_fetch_button.button])
+        ])
         GraphSettingsContainer.appendChild(graph_data_fetch_days_input_label)
         GraphSettingsContainer.appendChild(graph_data_fetch_row)
 
@@ -55,7 +65,7 @@ export class SettingsPage {
         this._Container.appendChild(OtherSettingsContainer)
 
         //Set default states
-        graph_realtime_switch.SetState(this._appSettings.Realtime)
+        this._graph_realtime_switch.SetState(this._appSettings.Realtime)
     }
 
     public async Setup() {
@@ -71,5 +81,27 @@ export class SettingsPage {
         else {
             page_instance._appSettings.Realtime = false
         }
+    }
+
+    static async onFetchDataButtonClicked(button: HTMLButtonElement, extra: any) {
+        const page_instance: SettingsPage = extra
+
+        const input = page_instance._graph_data_fetch_days_input.Input
+        const input_value = input.value
+        let cast_value = Number(input_value)
+
+        //Check if the converted value is NaN and handle that
+        if (Number.isNaN(cast_value)) {
+            cast_value = 0
+            input.value = String(cast_value)
+            console.log("Value conversion failed")
+        }
+
+        //Save the setting
+        page_instance._appSettings.DataFetchHours = cast_value
+        page_instance._appSettings.RefetchGraphData = true
+
+        //Trigger
+        page_instance._appSettings.TriggerReload()
     }
 }

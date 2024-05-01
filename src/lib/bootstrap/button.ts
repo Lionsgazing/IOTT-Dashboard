@@ -5,8 +5,8 @@ type ButtonData = {
     type: "submit" | "button" | "reset"
     content: string
 
-    onclick?: (button_element: HTMLButtonElement, extra?: any[]) => void
-    extra?: any[]
+    onClick?: (button: HTMLButtonElement, extra?: any) => void
+    onClickExtra?: any
 
     classNameAdditions?: string
     outline?: boolean
@@ -49,7 +49,7 @@ export class Button {
 
         //Click callback.
         this._button.onclick = () => {
-            this.data.onclick?.(this.button, this.data.extra) //Uses optional chaning to only execute if it exists.
+            this.data.onClick?.(this.button, this.data.onClickExtra) //Uses optional chaning to only execute if it exists.
         }       
     }
 }

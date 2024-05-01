@@ -35,6 +35,9 @@ export class DashboardPage {
     constructor(config: DashboardConfig, appSettings: AppSettings) {
         this._appSettings = appSettings
 
+        //Subscribe to appSettings reload
+        this._appSettings.SubscribeToReload(DashboardPage.onAppSettingsTrigger, this)
+
         //Save given values
         this._config = config
 
@@ -127,6 +130,26 @@ export class DashboardPage {
                 graph.Resize()
             }
         }        
+    }
+
+    public async fetchData(hours: number) {
+        console.log("Refetch data triggered")
+        for (const graph of this._Graphs) {
+            //Clear data
+            graph.ClearSeriesData()
+
+            //Update
+            graph.Update()
+        }
+    }
+
+    static onAppSettingsTrigger(appSettings: AppSettings, extra: any) {
+        const page_instance: DashboardPage = extra
+
+        //Check if refetch is needed.
+        if (appSettings.RefetchGraphData) {
+            void page_instance.fetchData(appSettings.DataFetchHours)
+        }
     }
 
     static onMqttMessage(topic: string, json_payload: object, extra: any) {

@@ -10,6 +10,8 @@ export class Graph {
     private _GraphSeriesIds: string[]
     private _GraphSeries: Dictionary<Serie>
 
+    private _markLines: Dictionary<object>
+
     private _IsLoaded: boolean
 
     private _title: string
@@ -40,6 +42,7 @@ export class Graph {
         //Create series containers
         this._GraphSeriesIds = []
         this._GraphSeries = {}
+        this._markLines = {}
     }
 
     public Resize() {
@@ -56,10 +59,39 @@ export class Graph {
         }
     }
 
+    public AddVerticalLine(SeriesID: string, markLine: object) {
+        this._markLines[SeriesID] = markLine
+    }
+
+    public ClearSeriesData() {
+        for (const ID of this._GraphSeriesIds) {
+            const series = this._GraphSeries[ID]
+            series.ClearBuffer()
+        }
+    }
+
     public Update() {
         let series: object[] = []
         for (const ID of this._GraphSeriesIds) {
-            series.push(this._GraphSeries[ID].toEcharts())
+            const serie_options = this._GraphSeries[ID].toEcharts()
+
+            //Debug
+            this._markLines[ID] = {
+                silent: true,
+                lineStyle: {
+                    color: "#333",
+                },
+                data: [
+                    {
+                        yAxis: 0.5
+                    }
+                ]
+            }
+            
+            //Add markline info
+            serie_options.markLine = this._markLines[ID]
+            
+            series.push(serie_options)
         }
 
         this._Graph.setOption({            
@@ -107,11 +139,27 @@ export class Graph {
             yAxisGraph = yAxis
         }
 
+        let visualMap = {
+            pieces: [
+                {
+                  gt: 0,
+                  lte: 0.5,
+                  color: '#93CE07'
+                },
+                {
+                  gt: 0.5,
+                  lte: 1,
+                  color: '#FBDB0F'
+                },
+              ],
+        }
+
         //Create echarts graph
         this._Graph.setOption({
             title: titleGraph,
             xAxis: xAxisGraph,
             yAxis: yAxisGraph,
+            visualMap: visualMap,
             grid: {
                 show: true,
             },

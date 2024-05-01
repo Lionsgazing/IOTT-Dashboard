@@ -62,7 +62,6 @@ for (const device of mqtt_config.devices) {
 }
 
 //Setup MQTT handler and link it to the relevant modules/pages
-console.log(subscribtionData)
 const MQTTManager = new MQTTHandler(subscribtionData)
 
 //Debug

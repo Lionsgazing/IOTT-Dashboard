@@ -1,12 +1,13 @@
 type reload_method = {
-    method: (extra: any) => void
+    method: (appSettings: AppSettings, extra: any) => void
     extra: any
 }
 
 
 export class AppSettings {
     public Realtime: boolean
-
+    public DataFetchHours: number
+    public RefetchGraphData: boolean
     private _reload_methods: reload_method[]
 
     constructor() {
@@ -14,15 +15,17 @@ export class AppSettings {
 
         //Set default values
         this.Realtime = true
+        this.RefetchGraphData = true
+        this.DataFetchHours = 24
     }
 
     public TriggerReload() {
         for (const reload_method of this._reload_methods){
-            reload_method.method(reload_method.extra)
+            reload_method.method(this, reload_method.extra)
         }
     }
 
-    public SubscribeToReload(reload_method: (extra: any) => void, extra: any) {
+    public SubscribeToReload(reload_method: (appSettings: AppSettings, extra: any) => void, extra: any) {
         this._reload_methods.push({method: reload_method, extra: extra})
     }
 }
