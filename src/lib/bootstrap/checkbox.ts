@@ -13,6 +13,10 @@ export class Checkbox {
         return this._Container
     }
 
+    get Checkbox() {
+        return this._input
+    }
+
     private _input: HTMLInputElement
 
     private _config: CheckboxConfig

@@ -149,6 +149,11 @@ export class DashboardPage {
         //Check if refetch is needed.
         if (appSettings.RefetchGraphData) {
             void page_instance.fetchData(appSettings.DataFetchHours)
+            appSettings.RefetchGraphData = false
+        }
+        for (const graph of page_instance._Graphs) {
+            console.log("boi")
+            graph.SetThreshold(appSettings.ThresholdFrom, appSettings.ThresholdTo, appSettings.ThresholdColor, appSettings.ThresholdLabel)
         }
     }
 

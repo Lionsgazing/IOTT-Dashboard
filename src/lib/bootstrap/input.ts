@@ -11,6 +11,9 @@ export type InputData = {
     //Boolean properties
     disabled?: boolean
     readonly?: boolean
+
+    onChange?: (input: HTMLInputElement, extra: any) => void
+    onChangeExtra?: any
 }
 
 
@@ -57,6 +60,12 @@ export class Input {
 
         if (this.data.readonly !== undefined) {
             this._Input.readOnly = this.data.readonly
+        }
+
+        if (this.data.onChange !== undefined) {
+            this._Input.onchange = () => {
+                this.data.onChange!(this._Input, this.data.onChangeExtra)
+            }
         }
     }
 

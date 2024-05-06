@@ -49,14 +49,16 @@ export class Serie {
         this._buffer = new graph_buffer(this._encoding.x[0], this._encoding.y.length + this._encoding.x.length, this._max_rows)
     }
 
-    public toEcharts() {
+    public toEcharts(id?: string) {
         return {
+            id: id,
             name: this._name,
             type: this._type,
             data: this._buffer.buffer,
             encode: this._encoding,
             sampling: this._sampling,
-            markLine: {}
+            markLine: {},
+            markArea: {}
         }
     }
 }

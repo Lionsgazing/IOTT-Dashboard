@@ -10,6 +10,11 @@ export class AppSettings {
     public RefetchGraphData: boolean
     private _reload_methods: reload_method[]
 
+    public ThresholdLabel: string
+    public ThresholdFrom: number | undefined
+    public ThresholdTo: number | undefined
+    public ThresholdColor: string
+
     constructor() {
         this._reload_methods = []
 
@@ -17,6 +22,11 @@ export class AppSettings {
         this.Realtime = true
         this.RefetchGraphData = true
         this.DataFetchHours = 24
+
+        this.ThresholdLabel = "Temperature Threshold"
+        this.ThresholdFrom = 1
+        this.ThresholdTo = undefined
+        this.ThresholdColor = "rgba(255,0,0,0.02)"
     }
 
     public TriggerReload() {

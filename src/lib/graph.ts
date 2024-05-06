@@ -10,7 +10,8 @@ export class Graph {
     private _GraphSeriesIds: string[]
     private _GraphSeries: Dictionary<Serie>
 
-    private _markLines: Dictionary<object>
+    private _markLines: object
+    private _markAreas: object
 
     private _IsLoaded: boolean
 
@@ -43,6 +44,7 @@ export class Graph {
         this._GraphSeriesIds = []
         this._GraphSeries = {}
         this._markLines = {}
+        this._markAreas = {}
     }
 
     public Resize() {
@@ -59,11 +61,50 @@ export class Graph {
         }
     }
 
-    public AddVerticalLine(SeriesID: string, markLine: object) {
-        this._markLines[SeriesID] = markLine
+    public SetThreshold(from?: number, to?: number, color?: string, label?: string) {
+        this._markAreas = {
+            itemStyle: {
+                color: color
+            },
+            data: [
+                [
+                    {
+                        yAxis: from
+                    },
+                    {
+                        yAxis: to
+                    }
+                ],
+            ]
+        }
+        this._markLines = {
+            silent: true,
+            label: {
+                show: true,
+                position: "middle",
+                formatter: (params: Object) => {
+                    return label
+                },
+                //width: "100",
+                //overflow: "break",
+            },
+            lineStyle: {
+                color: "#333",
+            },
+            data: [
+                {
+                    yAxis: from
+                }
+            ]
+        }
     }
 
+    /*public AddVerticalLine(SeriesID: string, markLine: object) {
+        this._markLines[SeriesID] = markLine
+    }*/
+
     public ClearSeriesData() {
+        console.log("CLEAR")
         for (const ID of this._GraphSeriesIds) {
             const series = this._GraphSeries[ID]
             series.ClearBuffer()
@@ -73,23 +114,11 @@ export class Graph {
     public Update() {
         let series: object[] = []
         for (const ID of this._GraphSeriesIds) {
-            const serie_options = this._GraphSeries[ID].toEcharts()
-
-            //Debug
-            this._markLines[ID] = {
-                silent: true,
-                lineStyle: {
-                    color: "#333",
-                },
-                data: [
-                    {
-                        yAxis: 0.5
-                    }
-                ]
-            }
+            const serie_options = this._GraphSeries[ID].toEcharts(ID)
             
             //Add markline info
-            serie_options.markLine = this._markLines[ID]
+            serie_options.markLine = this._markLines
+            serie_options.markArea = this._markAreas
             
             series.push(serie_options)
         }
@@ -102,6 +131,19 @@ export class Graph {
     public SetSize(height: string, width: string) {
         this._Graph.getDom().style.height = height
         this._Graph.getDom().style.width = width
+    }
+
+    public IDToSeriesIndex(target_ID: string) {
+        let i = 0
+        for (const ID of this._GraphSeriesIds) {
+            const serie_options = this._GraphSeries[ID].toEcharts(ID)
+            
+            if (serie_options.id == target_ID) {
+                return i
+            }
+
+            i++
+        }
     }
 
     public Setup(title: object | undefined = undefined, xAxis: object | undefined = undefined, yAxis: object | undefined = undefined) {
@@ -139,27 +181,11 @@ export class Graph {
             yAxisGraph = yAxis
         }
 
-        let visualMap = {
-            pieces: [
-                {
-                  gt: 0,
-                  lte: 0.5,
-                  color: '#93CE07'
-                },
-                {
-                  gt: 0.5,
-                  lte: 1,
-                  color: '#FBDB0F'
-                },
-              ],
-        }
-
         //Create echarts graph
         this._Graph.setOption({
             title: titleGraph,
             xAxis: xAxisGraph,
             yAxis: yAxisGraph,
-            visualMap: visualMap,
             grid: {
                 show: true,
             },
