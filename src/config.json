@@ -33,6 +33,14 @@
                 "display_x_axis": "timestamp",
                 "width": "",
                 "height": "200"
+            },
+            {
+                "title": "Odense",
+                "id_link": "Odense",
+                "display_y_axis": ["temperature", "humidity", "pressure"],
+                "display_x_axis": "timestamp",
+                "width": "",
+                "height": "200"
             }
         ]
     },
@@ -58,6 +66,11 @@
                 "id": "Aarhus",
                 "data_topic": "raspberry/Aarhus/sense-hat/readings/all_readings",
                 "status_topic": "status/raspberry-aarhus/connection"
+            },
+            {
+                "id": "Odense",
+                "data_topic": "raspberry/Odense/sense-hat/readings/all_readings",
+                "status_topic": "status/raspberry-odense/connection"
             }
         ]
     }

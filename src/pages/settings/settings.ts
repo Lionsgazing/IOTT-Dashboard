@@ -21,10 +21,10 @@ export class AppSettings {
         //Set default values
         this.Realtime = true
         this.RefetchGraphData = true
-        this.DataFetchHours = 24
+        this.DataFetchHours = 1
 
         this.ThresholdLabel = "Temperature Threshold"
-        this.ThresholdFrom = 1
+        this.ThresholdFrom = 35
         this.ThresholdTo = undefined
         this.ThresholdColor = "rgba(255,0,0,0.02)"
     }

@@ -4,6 +4,8 @@ export class graph_buffer {
     private _columns: number
     private _default_encoding: object
 
+    private _x_column: number
+
     get buffer() {
         return this._buffer
     }
@@ -21,6 +23,7 @@ export class graph_buffer {
     }
 
     constructor(x_column: number = 0, columns: number, max_rows: number | undefined = undefined) {
+        this._x_column = x_column
         if (max_rows === undefined) {
             this._max_rows = -1
         }
@@ -84,6 +87,24 @@ export class graph_buffer {
         }
         else {
             console.error("Columns in given data does not match buffer columns!")
+        }
+    }
+
+    public replaceAll(data: number[][], timestamp_conversion: boolean = true) {
+        this._buffer = structuredClone(data)
+
+        if (timestamp_conversion) {
+            for (let i = 0; i < this._buffer.length; i++) {
+
+                let timestamp = this._buffer[i][this._x_column]
+                if (timestamp % 1 != 0) {
+                    timestamp = Math.floor(timestamp) * 1000
+                }
+                
+
+                this._buffer[i][this._x_column] = timestamp
+                
+            }
         }
     }
 }

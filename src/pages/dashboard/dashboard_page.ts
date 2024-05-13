@@ -5,6 +5,7 @@ import { dom } from "../../lib/dom/dom"
 import { Graph } from "../../lib/graph"
 import {Serie} from '../../lib/graph_series'
 import { AppSettings } from "../settings/settings"
+import { get_data } from "../../lib/get_data"
 
 
 
@@ -61,7 +62,7 @@ export class DashboardPage {
             this._GraphContainers.push(graph_container)
 
             //Create graph
-            const graph = new Graph(graph_container, graph_info.title)
+            const graph = new Graph(graph_container, graph_info.title, graph_info.id_link)
             this._Graphs.push(graph)
 
             //Create navbar item
@@ -134,12 +135,24 @@ export class DashboardPage {
 
     public async fetchData(hours: number) {
         console.log("Refetch data triggered")
+
+        const json_payload = await get_data(hours)
+   
+
+
         for (const graph of this._Graphs) {
             //Clear data
             graph.ClearSeriesData()
 
+            const json_data = json_payload[graph.ID]
+
+            for (const SerieID of graph.SeriesIDs) {
+                graph.Series[SerieID].Buffer.replaceAll(json_data[SerieID])
+            }
+
             //Update
             graph.Update()
+
         }
     }
 
@@ -152,7 +165,6 @@ export class DashboardPage {
             appSettings.RefetchGraphData = false
         }
         for (const graph of page_instance._Graphs) {
-            console.log("boi")
             graph.SetThreshold(appSettings.ThresholdFrom, appSettings.ThresholdTo, appSettings.ThresholdColor, appSettings.ThresholdLabel)
         }
     }
@@ -178,8 +190,13 @@ export class DashboardPage {
         //Extract keys, values and the timestamp
         const keys = Object.keys(payload)
         const values = Object.values(payload)
-        const timestamp = payload.timestamp * 1000 //Adjust the given timestamp format to something Echarts understand.
 
+        let timestamp = payload.timestamp 
+
+        //So there is something wrong with the data we send sometimes for some reason so we just quickfix it here. NOT OPTIMAL!!!
+        if (timestamp % 1 != 0) {
+            timestamp = Math.floor(timestamp) * 1000
+        }
         
         //Find the target index which matches the graph we want to edit.
         let target_index = -1
@@ -213,10 +230,10 @@ export class DashboardPage {
                 //Check that the key does not exist as an id in the graph series.
                 if (page_instance.locate(key, display_y_axis) >= 0) {
                     if (key in graph.Series == false) {
-                        graph.AddSeries([new Serie(key, key, "line", {x: [0], y: [1]}, "lttb", 100)])
+                        graph.AddSeries([new Serie(key, key, "line", {x: [1], y: [0]}, "lttb", 100)])
                     }
-    
-                    graph.Series[key].Buffer.push([timestamp, value])
+                    
+                    graph.Series[key].Buffer.push([value, timestamp])
                 }
             }
         }   

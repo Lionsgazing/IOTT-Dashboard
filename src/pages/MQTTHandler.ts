@@ -26,11 +26,11 @@ export class MQTTHandler {
 
         //Create connection options for the MQTT
         this._mqtt_connection_options = {
-            host: "127.0.0.1",//"wss.niels-bjorn.dk",
-            port: 8883,//443, //Websocket port on broker
-            username: "",//"rpimqttclientb",
-            password: "",//"pD2l0bYEw",
-            useSSL: false,//true,
+            host: "wss.niels-bjorn.dk",
+            port: 443, //Websocket port on broker
+            username: "rpimqttclientb",
+            password: "pD2l0bYEw",
+            useSSL: true,
 
             subscribtions: total_subscribtions,
 

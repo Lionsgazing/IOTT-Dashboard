@@ -14,6 +14,7 @@ export class Graph {
     private _markAreas: object
 
     private _IsLoaded: boolean
+    private _ID: string
 
     private _title: string
 
@@ -33,12 +34,17 @@ export class Graph {
         return this._title
     }
 
-    constructor(target_container: HTMLDivElement, title: string) {
+    get ID() {
+        return this._ID
+    }
+
+    constructor(target_container: HTMLDivElement, title: string, id: string) {
         //Save container
         this._Container = target_container
         this._Graph = echarts.init(this._Container)
         this._IsLoaded = false
         this._title = title
+        this._ID = id
 
         //Create series containers
         this._GraphSeriesIds = []
@@ -163,7 +169,7 @@ export class Graph {
         if (xAxis === undefined) {
             xAxisGraph = {
                 name: "xAxis",
-                type: "time",
+                type: "value",
             }
         }
         else {
