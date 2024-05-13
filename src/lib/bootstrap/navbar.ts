@@ -131,7 +131,7 @@ export class Navbar {
 
     }
 
-    static callback(ev: Event, id: number, item: NavbarItem, nav: Navbar) {
+    static callback(_ev: Event, id: number, item: NavbarItem, nav: Navbar) {
         //Get items
         const Items = nav._data.NavbarItems
         

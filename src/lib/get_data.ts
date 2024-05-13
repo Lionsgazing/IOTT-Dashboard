@@ -19,7 +19,7 @@ async function streamToString(stream: any) {
 
 
 export async function get_data(hours: number) {
-    const url = "api/get?hours_back=" + hours
+    const url = "database?hours_back=" + hours
 
     const response = await fetch(url, {method: "GET"})
     const result = await streamToString(response.body)

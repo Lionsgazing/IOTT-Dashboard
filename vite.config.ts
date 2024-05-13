@@ -4,13 +4,14 @@ export default defineConfig({
   root: "./src",
   
   server: {
-    port: 8080,
+    host: "0.0.0.0",
+    port: 8086,
     cors: {
       origin: false,
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:5000/',
+        target: 'http://127.0.0.1:8085/',
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')
@@ -18,3 +19,4 @@ export default defineConfig({
     },
   }, 
 })
+

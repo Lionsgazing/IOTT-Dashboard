@@ -21,7 +21,7 @@ export class Button {
 
     private data: ButtonData
 
-    private index: number = 0
+    //private index: number = 0
 
     constructor(data: ButtonData) {
         //Store button data
