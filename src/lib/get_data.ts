@@ -1,6 +1,3 @@
-import * as http from 'http'
-
-
 async function streamToString(stream: any) {
     const reader = stream.getReader();
     const textDecoder = new TextDecoder();

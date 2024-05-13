@@ -62,7 +62,8 @@ export class MQTTHandler {
         catch {
             console.log("JSON payload parsing failed...")
             console.log("Passing the raw payload str")
-            json_payload = {"raw": payloadstr}
+            //json_payload = {"raw": payloadstr}
+            return
         }
 
         //Find topic match and decide where to sent it.
