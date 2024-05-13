@@ -44,7 +44,7 @@ export class StatusPage {
         
     }
 
-    static onMqttMessage(topic: string, json_payload: object, extra: any) {
+    static onMqttMessage(topic: string, json_payload: any, extra: any) {
         const page_instance: StatusPage = extra[0]
         const payload: {status: string} = json_payload
         

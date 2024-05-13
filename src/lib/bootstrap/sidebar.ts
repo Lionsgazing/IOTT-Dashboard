@@ -32,7 +32,6 @@ export class Sidebar {
     }
 
     private _SidebarHeaderContainer: HTMLDivElement
-    private _SidebarHeader: HTMLHeadingElement
 
     constructor(data: SidebarData, content_target: HTMLDivElement) {
         this._Data = data

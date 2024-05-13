@@ -137,8 +137,6 @@ export class DashboardPage {
         console.log("Refetch data triggered")
 
         const json_payload = await get_data(hours)
-   
-
 
         for (const graph of this._Graphs) {
             //Clear data
@@ -169,7 +167,7 @@ export class DashboardPage {
         }
     }
 
-    static onMqttMessage(topic: string, json_payload: object, extra: any) {
+    static onMqttMessage(topic: string, json_payload: any, extra: any) {
         //Extract the extra information we know exists.
         const page_instance: DashboardPage = extra[0]
         const id: string = extra[1]
@@ -185,7 +183,7 @@ export class DashboardPage {
         }
         
         //Get the payload
-        const payload: {timestamp: number, temperature: number, humidity: number, pressure: number} =  json_payload
+        const payload: {timestamp: number, temperature: number, humidity: number, pressure: number} = json_payload
 
         //Extract keys, values and the timestamp
         const keys = Object.keys(payload)

@@ -19,7 +19,7 @@ export class NavbarItem {
     protected _NavbarItemBrand: HTMLElement
 
     //Callback
-    private _callback?: (ev:Event, id:number, item: NavbarItem, nav: Navbar) => void
+    private _callback?: (id:number, item: NavbarItem, nav: Navbar) => void
     private _callback_id?: number
 
     //Define config storage
@@ -102,15 +102,15 @@ export class NavbarItem {
         this._NavbarItem.appendChild(this._NavbarItemBrand)
     }
 
-    public SetOnClickCallback(callback: (ev: Event, id: number, item: NavbarItem, nav: Navbar) => void, id: number, nav: Navbar) {
+    public SetOnClickCallback(callback: (id: number, item: NavbarItem, nav: Navbar) => void, id: number, nav: Navbar) {
         //Store
         this._callback = callback
         this._callback_id = id
 
         //Assign
-        this._NavbarItemBrand.onclick = (ev: Event) => {
+        this._NavbarItemBrand.onclick = () => {
             //ev.preventDefault() Prevents the normal HREF behaviour. Might be usefull later!
-            this._callback!(ev, this._callback_id!, this, nav)
+            this._callback!(this._callback_id!, this, nav)
         }
     }
 }
