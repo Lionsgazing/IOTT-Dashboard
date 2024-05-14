@@ -38,40 +38,46 @@ export namespace dom {
         return option
     }
 
-    export function h1(content: string) {
-        const option = document.createElement("h1")
-        option.textContent = content
-        return option
+    export function h1(content: string, className: string = "") {
+        const h1 = document.createElement("h1")
+        h1.className = className
+        h1.textContent = content
+        return h1
     }
 
-    export function h2(content: string) {
-        const option = document.createElement("h2")
-        option.textContent = content
-        return option
+    export function h2(content: string, className: string = "") {
+        const h2 = document.createElement("h2")
+        h2.className = className
+        h2.textContent = content
+        return h2
     }
 
-    export function h3(content: string) {
-        const option = document.createElement("h3")
-        option.textContent = content
-        return option
+    export function h3(content: string, className: string = "") {
+        const h3 = document.createElement("h3")
+        h3.className = className
+        h3.textContent = content
+        return h3
     }
 
-    export function h4(content: string) {
-        const option = document.createElement("h4")
-        option.textContent = content
-        return option
+    export function h4(content: string, className: string = "") {
+        const h4 = document.createElement("h4")
+        h4.className = className
+        h4.textContent = content
+        return h4
     }
 
-    export function h5(content: string) {
-        const option = document.createElement("h5")
-        option.textContent = content
-        return option
+    export function h5(content: string, className: string = "") {
+        const h5 = document.createElement("h5")
+        h5.className = className
+        h5.textContent = content
+        return h5
     }
 
-    export function h6(content: string) {
-        const option = document.createElement("h6")
-        option.textContent = content
-        return option
+    export function h6(content: string, className: string = "") {
+        const h6 = document.createElement("h6")
+        h6.className = className
+        h6.textContent = content
+        return h6
     }
 
     export function nav(className: string) {
@@ -115,8 +121,9 @@ export namespace dom {
         return hr
     }
 
-    export function span() {
+    export function span(className: string = "") {
         const span = document.createElement("span")
+        span.className = className
         return span
     }
 

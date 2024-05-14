@@ -22,6 +22,7 @@ export class SettingsPage {
     private _graph_threshold_from_input: Input
     private _graph_threshold_to_input: Input
     private _graph_threshold_color_input: Input
+    private _graph_threshold_target_input: Input
 
     constructor(appSettings: AppSettings) {
         this._appSettings = appSettings
@@ -58,8 +59,6 @@ export class SettingsPage {
         const graph_data_fetch_container = dom.div("col pt-4", [graph_data_fetch_header, graph_data_fetch_header_seperator, graph_data_fetch_days_input_label, graph_data_fetch_row])
         GraphSettingsContainer.appendChild(graph_data_fetch_container)
 
-
-
         //Threshold
         const graph_threshold_header = dom.h4("Threshold")
         const graph_threshold_header_seperator = dom.hr()
@@ -78,8 +77,11 @@ export class SettingsPage {
             dom.div("d-flex flex-column flex-grow-1 ps-1", [graph_threshold_to_input_label, this._graph_threshold_to_input.Input])
         ])
 
-        const graph_threshold_color_label = dom.h5("Threshold color (HEX)")
+        const graph_threshold_color_label = dom.h5("Threshold color (HEX)", "pt-2")
         this._graph_threshold_color_input = new Input({size: {width: "25", height: "25"}, onChange: SettingsPage.onThresholdColorChange, onChangeExtra: this}, "text")
+
+        const graph_threshold_target_label = dom.h5("Threshold target series", "pt-2")
+        this._graph_threshold_target_input = new Input({size: {width: "25", height: "25"}, onChange: SettingsPage.onThresholdTargetChange, onChangeExtra: this}, "text")
 
         const graph_threshold_container = dom.div("col pt-4", [
             graph_threshold_header, 
@@ -88,7 +90,9 @@ export class SettingsPage {
             this._graph_threshold_label_input.Input, 
             graph_threshold_input_range_row,
             graph_threshold_color_label,
-            this._graph_threshold_color_input.Input
+            this._graph_threshold_color_input.Input,
+            graph_threshold_target_label,
+            this._graph_threshold_target_input.Input
         ])
 
         GraphSettingsContainer.appendChild(graph_threshold_container)
@@ -128,6 +132,8 @@ export class SettingsPage {
             page_instance._graph_threshold_from_input.Input.value = String(appSettings.ThresholdFrom)
         }
         page_instance._graph_threshold_color_input.Input.value = String(appSettings.ThresholdColor)
+
+        page_instance._graph_threshold_target_input.Input.value = String(appSettings.ThresholdTarget)
     }
 
     public async Setup() {
@@ -157,7 +163,7 @@ export class SettingsPage {
         if (Number.isNaN(cast_value)) {
             cast_value = 0
             input.value = String(cast_value)
-            console.log("Value conversion failed")
+            console.warn("[SettingsPage] InputDays value conversion failed")
         }
 
         //Save the setting
@@ -179,46 +185,55 @@ export class SettingsPage {
         const page_instance: SettingsPage = extra
 
         const input_lower_case = input.value.toLowerCase()
-        if (input_lower_case === "Inf" || input_lower_case === "-Inf") {
-            page_instance._appSettings.ThresholdTo = undefined
-            return
+        if (input_lower_case !== "inf" && input_lower_case !== "-inf") {
+            const input_value = input.value
+            let cast_value = Number(input_value)
+            if (Number.isNaN(cast_value)) {
+                cast_value = 0
+                input.value = String(cast_value)
+                console.warn("[SettingsPage] InputThresholdFrom value conversion failed")
+            }
+
+            page_instance._appSettings.ThresholdFrom = cast_value
+        }
+        else {
+            page_instance._appSettings.ThresholdFrom = input_lower_case
         }
 
-        const input_value = input.value
-        let cast_value = Number(input_value)
-        if (Number.isNaN(cast_value)) {
-            cast_value = 0
-            input.value = String(cast_value)
-            console.log("Value conversion failed")
-        }
-
-        page_instance._appSettings.ThresholdFrom = cast_value
         page_instance._appSettings.TriggerReload()
     }
     static async onThresholdToChange(input: HTMLInputElement, extra: any) {
         const page_instance: SettingsPage = extra
 
         const input_lower_case = input.value.toLowerCase()
-        if (input_lower_case === "inf" || input_lower_case === "-inf") {
-            page_instance._appSettings.ThresholdTo = undefined
-            return
+        if (input_lower_case !== "inf" && input_lower_case !== "-inf") {
+            const input_value = input.value
+            let cast_value = Number(input_value)
+            if (Number.isNaN(cast_value)) {
+                cast_value = 0
+                input.value = String(cast_value)
+                console.warn("[SettingsPage] InputThresholdTo value conversion failed")
+            }
+
+            page_instance._appSettings.ThresholdTo = cast_value
+        }
+        else {
+            page_instance._appSettings.ThresholdTo = input_lower_case
         }
 
-        const input_value = input.value
-        let cast_value = Number(input_value)
-        if (Number.isNaN(cast_value)) {
-            cast_value = 0
-            input.value = String(cast_value)
-            console.log("Value conversion failed")
-        }
-
-        page_instance._appSettings.ThresholdTo = cast_value
         page_instance._appSettings.TriggerReload()
     }
     static async onThresholdColorChange(input: HTMLInputElement, extra: any) {
         const page_instance: SettingsPage = extra
 
         page_instance._appSettings.ThresholdColor = input.value
+        page_instance._appSettings.TriggerReload()
+    }
+
+    static async onThresholdTargetChange(input: HTMLInputElement, extra: any) {
+        const page_instance: SettingsPage = extra
+
+        page_instance._appSettings.ThresholdTarget = input.value
         page_instance._appSettings.TriggerReload()
     }
 }

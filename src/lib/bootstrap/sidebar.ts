@@ -53,7 +53,6 @@ export class Sidebar {
         body.style.backgroundColor = this._Data.background_color
 
         this._router = new Router({target_container: this._ContentTarget})
-        console.log(this._ContentTarget)
         
         this._nav = new Navbar({
             title: this._Data.title,

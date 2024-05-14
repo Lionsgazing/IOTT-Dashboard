@@ -1,4 +1,4 @@
-import {MQTTHandler} from "./pages/MQTTHandler"
+import {MQTTHandler} from "../pages/MQTTHandler"
 
 export class mqtt_debug {
     private _mqtt_instance: MQTTHandler

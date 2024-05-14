@@ -63,7 +63,7 @@ export class graph_buffer {
                 this.rotate(data)
         }
         else {
-            console.error("Columns in given data does not match buffer columns!")
+            console.error("[GraphBuffer] Columns in given data does not match buffer columns!")
         }
     }
 
@@ -73,7 +73,7 @@ export class graph_buffer {
             this._buffer.push(data)
         }
         else {
-            console.error("Columns in given data does not match buffer columns!")
+            console.error("[GraphBuffer] Columns in given data does not match buffer columns!")
         }
     }
 
@@ -86,7 +86,7 @@ export class graph_buffer {
             }
         }
         else {
-            console.error("Columns in given data does not match buffer columns!")
+            console.error("[GraphBuffer] Columns in given data does not match buffer columns!")
         }
     }
 

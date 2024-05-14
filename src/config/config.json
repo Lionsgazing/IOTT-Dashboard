@@ -38,6 +38,14 @@
     },
 
     "mqtt_config": {
+        "broker": {
+            "host": "wss.niels-bjorn.dk",
+            "port": 443,
+            "username": "rpimqttclientb",
+            "password": "pD2l0bYEw",
+            "useSSL": true
+        },
+
         "devices": [
             {
                 "id": "Aalborg",

@@ -1,4 +1,4 @@
-import { DashboardConfig } from "../../config"
+import { DashboardConfig } from "../../config/config"
 import { NavbarItem } from "../../lib/bootstrap/navbarItem"
 import { Sidebar } from "../../lib/bootstrap/sidebar"
 import { dom } from "../../lib/dom/dom"
@@ -6,6 +6,7 @@ import { Graph } from "../../lib/graph"
 import {Serie} from '../../lib/graph_series'
 import { AppSettings } from "../settings/settings"
 import { get_data } from "../../lib/get_data"
+import { Spinner } from "../../lib/bootstrap/spinner"
 
 
 
@@ -23,6 +24,9 @@ export class DashboardPage {
 
     private _sidebar: Sidebar
 
+    private _thresholdWarning: Spinner
+    private _thresholdWarningTarget: string
+
     get IsLoaded() {
         return this._isLoaded
     }
@@ -33,8 +37,10 @@ export class DashboardPage {
 
     private _appSettings: AppSettings
 
-    constructor(config: DashboardConfig, appSettings: AppSettings) {
+    constructor(config: DashboardConfig, appSettings: AppSettings, ThresholdWarning: Spinner, ThresholdWarningTarget: string) {
         this._appSettings = appSettings
+        this._thresholdWarning = ThresholdWarning
+        this._thresholdWarningTarget = ThresholdWarningTarget
 
         //Subscribe to appSettings reload
         this._appSettings.SubscribeToReload(DashboardPage.onAppSettingsTrigger, this)
@@ -126,31 +132,39 @@ export class DashboardPage {
             //Observe the target for specific changes
             mutObs.observe(document.body, {childList: true, subtree: true})
 
-            //Resize whenever window is resized
-            window.onresize = () => {
+            //Resize graph whenever window is resized
+            window.addEventListener("resize", () => {
                 graph.Resize()
-            }
+            })
         }        
     }
 
     public async fetchData(hours: number) {
-        console.log("Refetch data triggered")
+        //Try to get the data from the database
+        let json_payload
+        try {
+            json_payload = await get_data(hours)
+            console.info("[DashboardPage] Got " + String(hours) + " hours of data from database.")
+        }
+        catch(e) {
+            console.error("[DashboardPage] Failed getting " + String(hours) + " hours of data from database.")
+            console.error(e)
+            return
+        }
 
-        const json_payload = await get_data(hours)
-
+        //Apply data to each graph.
         for (const graph of this._Graphs) {
-            //Clear data
+            //Clear graph series data
             graph.ClearSeriesData()
 
+            //Replace data for each series in the current graph.
             const json_data = json_payload[graph.ID]
-
             for (const SerieID of graph.SeriesIDs) {
                 graph.Series[SerieID].Buffer.replaceAll(json_data[SerieID])
             }
 
-            //Update
+            //Update graph series
             graph.Update()
-
         }
     }
 
@@ -163,7 +177,8 @@ export class DashboardPage {
             appSettings.RefetchGraphData = false
         }
         for (const graph of page_instance._Graphs) {
-            graph.SetThreshold(appSettings.ThresholdFrom, appSettings.ThresholdTo, appSettings.ThresholdColor, appSettings.ThresholdLabel)
+            page_instance._thresholdWarning.Hide() //Reset it to hiding just incase we never trigger the event again
+            graph.SetThreshold(appSettings.ThresholdFrom, appSettings.ThresholdTo, appSettings.ThresholdColor, appSettings.ThresholdLabel + " " + appSettings.ThresholdTarget)
         }
     }
 
@@ -222,6 +237,36 @@ export class DashboardPage {
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i]
             const value = values[i]
+
+            //Threshold logic. Just checks if we are between the set Threshold interval defined in settings.
+            if (key == page_instance._appSettings.ThresholdTarget) {
+                //Check that it is a number before evaluating
+                if (typeof page_instance._appSettings.ThresholdFrom !== "number") {
+                    break
+                }
+
+                if (value >= page_instance._appSettings.ThresholdFrom!) {
+                    if (page_instance._appSettings.ThresholdTo !== undefined) {
+                        //Check that it is a number before evaluating
+                        if (typeof page_instance._appSettings.ThresholdTo !== "number") {
+                            break
+                        }
+
+                        if (value <= page_instance._appSettings.ThresholdTo) {
+                            page_instance._thresholdWarning.Show("Threshold warning: " + String(id))
+                        }
+                        else {
+                            page_instance._thresholdWarning.Hide()
+                        }
+                    }
+                    else {
+                        page_instance._thresholdWarning.Show("Threshold warning: " + String(id))
+                    }
+                }
+                else {
+                    page_instance._thresholdWarning.Hide()
+                }
+            }
 
             //Check that the key is not timestamp
             if (key !== display_x_axis) {

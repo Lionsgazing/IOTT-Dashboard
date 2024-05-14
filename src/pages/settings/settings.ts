@@ -11,9 +11,10 @@ export class AppSettings {
     private _reload_methods: reload_method[]
 
     public ThresholdLabel: string
-    public ThresholdFrom: number | undefined
-    public ThresholdTo: number | undefined
+    public ThresholdFrom: number | string | undefined
+    public ThresholdTo: number | string | undefined
     public ThresholdColor: string
+    public ThresholdTarget: string
 
     constructor() {
         this._reload_methods = []
@@ -23,10 +24,11 @@ export class AppSettings {
         this.RefetchGraphData = true
         this.DataFetchHours = 1
 
-        this.ThresholdLabel = "Temperature Threshold"
-        this.ThresholdFrom = 35
+        this.ThresholdLabel = "Threshold"
+        this.ThresholdFrom = 25
         this.ThresholdTo = undefined
         this.ThresholdColor = "rgba(255,0,0,0.02)"
+        this.ThresholdTarget = "temperature"
     }
 
     public TriggerReload() {

@@ -1,4 +1,12 @@
 export type MQTTConfig = {
+    broker: {
+        host: string
+        port: number
+        username: string
+        password: string
+        useSSL: boolean
+    }
+
     devices: 
         {
             id: string

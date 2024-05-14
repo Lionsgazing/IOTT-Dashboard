@@ -12,6 +12,13 @@ export type NavbarData = {
     alignemnt?: string
 
     NavbarItems: NavbarItem[]
+
+    ExtraContent?: NavbarExtraContent
+}
+
+export type NavbarExtraContent = {
+    alignment?: string
+    content: HTMLDivElement
 }
 
 export class Navbar {
@@ -75,6 +82,7 @@ export class Navbar {
                 //Create container for navbar items
                 const NavbarItemContainer = dom.ul("navbar-nav flex-grow-1")
                 NavbarItemContainer.className += " " + this._data.alignemnt
+
                 //Get NavbarItem and append it to the Navbar 
                 const Item = Items[i]
                 NavbarItemContainer.appendChild(Item.NavbarItem)
@@ -112,6 +120,11 @@ export class Navbar {
             //Stich them together
             this._NavbarContainer.appendChild(NavbarItemContainer)
             this._Navbar.appendChild(this._NavbarContainer)    
+        }
+
+        //Extra content
+        if (this._data.ExtraContent !== undefined) {
+            this._Navbar.appendChild(this._data.ExtraContent.content)
         }
     }
 

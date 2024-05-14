@@ -1,5 +1,5 @@
 import mqtt from "mqtt"
-import { MQTTConfig } from "../../config"
+import { MQTTConfig } from "../../config/config"
 import { SmartText } from "../../lib/bootstrap/smarttext"
 import { dom } from "../../lib/dom/dom"
 import { DeviceStatus } from "./status"

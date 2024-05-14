@@ -1,4 +1,6 @@
-import { MQTT, MQTT_Connection_Options, Message } from "../lib/mqtt.ts";
+
+import mqtt from "mqtt";
+import { MQTT, MQTT_Connection_Options, MQTT_Subscription_Options, Message } from "../lib/mqtt.ts";
 import { replaceAll } from "../lib/replaceAll.ts";
 
 export type SubscribtionsData = {
@@ -10,9 +12,14 @@ export type SubscribtionsData = {
 export class MQTTHandler {
     private _mqtt: MQTT
     private _mqtt_connection_options: MQTT_Connection_Options
+    private _mqtt_subscription_options: MQTT_Subscription_Options
     private _subscribtionsData: SubscribtionsData[]
 
-    constructor(subscribtionsData: SubscribtionsData[]) {
+    constructor(mqtt_connection_options: MQTT_Connection_Options, subscribtionsData: SubscribtionsData[]) {
+        //Save given parameters
+        this._mqtt_connection_options = mqtt_connection_options
+        this._subscribtionsData = subscribtionsData
+        
         //Unpack subscribtion object to get actual subscribtion topics
         let total_subscribtions: string[] = []
         for (const subscribtionData of subscribtionsData) {
@@ -21,27 +28,15 @@ export class MQTTHandler {
             }
         }
 
-        //Save subscribtion data
-        this._subscribtionsData = subscribtionsData
-
-        //Create connection options for the MQTT
-        this._mqtt_connection_options = {
-            host: "wss.niels-bjorn.dk",
-            port: 443, //Websocket port on broker
-            username: "rpimqttclientb",
-            password: "pD2l0bYEw",
-            useSSL: true,
-
-            subscribtions: total_subscribtions,
-
+        //Create mqtt_subscription_options
+        this._mqtt_subscription_options = {
             onMessageCallback: MQTTHandler.onMessage,
             onMessageCallbackExtra: this,
-
-            client_id: "IOTT_Dashboard-" + String(new Date().getTime())
+            subscribtions: total_subscribtions
         }
 
         //Create MQTT instance
-        this._mqtt = new MQTT(this._mqtt_connection_options)
+        this._mqtt = new MQTT(this._mqtt_connection_options, this._mqtt_subscription_options)  
     }
 
     public publish(topic: string, payload: object, retained: boolean = false) {
@@ -60,9 +55,7 @@ export class MQTTHandler {
             json_payload = JSON.parse(payloadstr)
         }
         catch {
-            console.log("JSON payload parsing failed...")
-            console.log("Passing the raw payload str")
-            //json_payload = {"raw": payloadstr}
+            console.warn("[MQTTHandler] JSON payload parsing failed... Ignoring payload...")
             return
         }
 

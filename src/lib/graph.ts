@@ -67,7 +67,7 @@ export class Graph {
         }
     }
 
-    public SetThreshold(from?: number, to?: number, color?: string, label?: string) {
+    public SetThreshold(from?: number | string, to?: number | string, color?: string, label?: string) {
         this._markAreas = {
             itemStyle: {
                 color: color
@@ -91,8 +91,6 @@ export class Graph {
                 formatter: (params: Object) => {
                     return label
                 },
-                //width: "100",
-                //overflow: "break",
             },
             lineStyle: {
                 color: "#333",
@@ -110,7 +108,7 @@ export class Graph {
     }*/
 
     public ClearSeriesData() {
-        console.log("CLEAR")
+        console.info("[Graph] All series data cleared")
         for (const ID of this._GraphSeriesIds) {
             const series = this._GraphSeries[ID]
             series.ClearBuffer()
@@ -194,14 +192,32 @@ export class Graph {
             yAxis: yAxisGraph,
             grid: {
                 show: true,
+                bottom: "110px"
             },
             legend: {
                 show: "true",
                 type: "plain",
-                bottom: "2.5%",
+                bottom: "60px",
             },
-            dataZoom: {
-                type: "inside",
+            dataZoom: [
+                {
+                    type: "inside",
+                    filterMode: "none",
+                },
+                {
+                    type: "slider",
+                    filterMode: "none",
+                    bottom: "25px",
+                }
+            ],
+            toolbox: {
+                show: true,
+                feature: {
+                    saveAsImage: {
+                        show: true,
+                        type: "png",
+                    },
+                }
             },
             axisPointer: {
                 show: true,
