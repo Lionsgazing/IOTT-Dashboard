@@ -115,7 +115,7 @@ export class Graph {
         }
     }
 
-    public Update() {
+    public Update(GraphSubTitle: string = "") {
         let series: object[] = []
         for (const ID of this._GraphSeriesIds) {
             const serie_options = this._GraphSeries[ID].toEcharts(ID)
@@ -129,6 +129,9 @@ export class Graph {
 
         this._Graph.setOption({            
             series: series,
+            title: {
+                subtext: GraphSubTitle
+            }
         })
     }
 
@@ -179,6 +182,7 @@ export class Graph {
             yAxisGraph = {
                 name: "yAxis",
                 type: "value",
+                nameLocation: "middel"
             }
         }
         else {
@@ -192,7 +196,9 @@ export class Graph {
             yAxis: yAxisGraph,
             grid: {
                 show: true,
-                bottom: "110px"
+                bottom: "110px",
+                left: "7.5%",
+                right: "7.5%"
             },
             legend: {
                 show: "true",

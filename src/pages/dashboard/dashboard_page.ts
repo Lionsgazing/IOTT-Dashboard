@@ -120,8 +120,11 @@ export class DashboardPage {
                         type: "time"
                     },
                     {
-                        name: "Value",
-                        type: "value"
+                        //name: "Value", //Removed name because it not needed in this case and had problems with moving it around.
+                        type: "value",
+                        nameLocation: "middel",
+                        nameRotate: 90,
+                        nameGap: 50
                     }
                 )
                 graph.Resize()
@@ -233,6 +236,8 @@ export class DashboardPage {
         const display_x_axis = page_instance._config.graphs[target_index].display_x_axis
         const display_y_axis = page_instance._config.graphs[target_index].display_y_axis
 
+        let avg_temp = 0
+
         //Now add series and insert data depending on the keys received. We only add series if they are missing.
         for (let i = 0; i < keys.length; i++) {
             const key = keys[i]
@@ -277,12 +282,16 @@ export class DashboardPage {
                     }
                     
                     graph.Series[key].Buffer.push([value, timestamp])
+
+                    if (key === "temperature") {
+                        avg_temp = graph.Series[key].Buffer.average()[0]
+                    }
                 }
             }
         }   
         
         //Update graph
-        graph.Update()        
+        graph.Update("Average Temperature: " + String(avg_temp))        
     }
 
     private locate(target: any, arr: any[]) {

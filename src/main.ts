@@ -14,6 +14,7 @@ import { AppSettings } from './pages/settings/settings'
 // --Import config--
 import config from './config/config.json'
 import { Spinner } from './lib/bootstrap/spinner'
+import { SmartText } from './lib/bootstrap/smarttext'
 const mqtt_config: MQTTConfig = config.mqtt_config
 const dashboard_config: DashboardConfig = config.dashboard_config
 
@@ -29,7 +30,6 @@ const appSettings = new AppSettings() //Used for handling settings in the applic
 
 // --Create Threshold warning--
 const ThresholdWarning = new Spinner({Text: "Threshold", TextColor: "#dc3545", SpinnerColor: "#dc3545", ContainerClassExtra: "pe-4", SpinnerTextClassExtra: "pe-2"})
-
 
 // --Create the avaliable main pages--
 const Dashboard = new DashboardPage(dashboard_config, appSettings, ThresholdWarning, "temperature")

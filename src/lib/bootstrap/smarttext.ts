@@ -24,6 +24,7 @@ export class SmartText {
         this._textElements = []
         for (let i = 0; i < this._data.contents.length; i++) {
             const span = dom.span()
+            span.style.whiteSpace = "nowrap"
             span.textContent = this._data.contents[i]
             
             const color = this._data.colors[i]

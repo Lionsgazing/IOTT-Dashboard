@@ -55,6 +55,28 @@ export class graph_buffer {
         }
     }
 
+    public average() {
+        let average_sum: number[] = []
+        for (let i_column = 0; i_column < this._columns - 1; i_column++) {
+            average_sum.push(0)
+        }
+
+        for (let i_row = 0; i_row < this._buffer.length; i_row++) {
+            for (let i_column = 0; i_column < this._buffer[i_row].length; i_column++) {
+                if (i_column != this._x_column) {
+                    average_sum[i_column] += this._buffer[i_row][i_column]
+                }
+            }
+        }
+
+        let average: number[] = []
+        for (let i = 0; i < average_sum.length; i++) {
+            average.push(average_sum[i] / this._buffer.length)
+        }
+
+        return average
+    }
+
     public push(data: number[]) {
         if (data.length === this._columns) {
             if (this._buffer.length < this._max_rows)
@@ -101,7 +123,6 @@ export class graph_buffer {
                     timestamp = Math.floor(timestamp) * 1000
                 }
                 
-
                 this._buffer[i][this._x_column] = timestamp
                 
             }
